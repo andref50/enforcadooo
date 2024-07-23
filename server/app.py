@@ -15,10 +15,18 @@ data = {
         'title': 'Mr.Bean'
         }
 
+accepted = {
+    'status': 'OK'
+}
+
 
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
-    return jsonify(data)
+    if request.method == 'GET':
+        return jsonify(data)
+    if request.method == 'POST':
+        return jsonify(accepted)
+
 
 if __name__ == '__main__':
     app.run()

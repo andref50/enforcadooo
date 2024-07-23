@@ -1,9 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 body {
-    @apply bg-gray-900;
+    @apply bg-gray-800;
     @apply text-slate-100;
+    font-family: Rubik;
 }
+
+h1.titulo {
+    font-weight: bold;
+    color: #E9C46A;
+    font-size: 24px;
+}
+
+div.topo {
+    background: #433D8B
+}
+
+button {
+    background: #C8ACD6;
+    color: #17153B;
+    font-weight: bold;
+    margin: 4px;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: 0.05s;
+ }
+
+button:hover {
+    background: #DDDDDD;
+    transition: 0.05s;
+ }
+
+button.helpers {
+    width: 35px;
+    max-width: 40px;
+    font-size: 13px;
+ }
+
+button.keyboard {
+    font-size: 20px;
+    height: 70px;
+    max-width: 80px;
+    padding: 12px;
+ }
+
+button.keyboard-enter {
+    font-size: 20px;
+    height: 68px;
+    padding: 12px;
+ }
+
+input {
+    font-size: 48px;
+    width: 48px;
+    height: 68px;  
+ }
+
+input.texto-input {
+    background: #655485; 
+    border-radius: 8px;
+ }
+
+
+
+input.texto-correct {
+    background: #36BA98; 
+    border-radius: 8px;
+ }
+
+input.texto-input:focus {
+    border-bottom: solid 8px;
+    outline: none;
+    caret-color: transparent;
+ }
+
+input.texto-correct:focus{
+    outline: none;
+    caret-color: transparent;
+ }
+
+ div.banco {
+    background: #655485;
+    width: 56px;
+    height: 64px;
+    margin: 4px;
+    border-radius: 8px
+ }
+
+ div.banco-erro {
+    background: #952540;
+    width: 56px;
+    height: 64px;
+    margin: 4px;
+    border-radius: 8px
+ }
+
+ div.letras-div{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px;
+    items-gap: 8px;
+    justify-content: center;
+ }
+
+
+ div.tentativas-box{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 12px;
+    items-gap: 8px;
+    justify-content: center;
+ }
+
+p.texto-input {
+    text-align: center;
+    font-size: 40px;
+    width: 48px;
+    height: 68px; 
+    padding: 4px;
+    background: #655485; 
+    border-radius: 8px;
+ }
+
+p.texto-correct {
+    text-align: center;
+    font-size: 40px;
+    width: 48px;
+    height: 68px; 
+    padding: 4px;
+    background: #36BA98; 
+    border-radius: 8px;
+ }
