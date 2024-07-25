@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,6 +12,26 @@ body {
     @apply bg-gray-800;
     @apply text-slate-100;
     font-family: Rubik;
+}
+
+p {
+    font-family: Barlow;
+}
+
+h1.logo {
+    font-family: Bebas Neue;
+    font-weight: 600;
+    color: #E9C46A;
+    font-size: 36px;
+}
+
+div.popup-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0%;
+    pointer-events: none;
 }
 
 div.janela {
@@ -25,15 +47,33 @@ div.janela {
 }
 
 div.janela-title {
-    font-size: 56px;
+    font-size: 50px;
+    font-family: Bebas;
+    margin-bottom: 28px;
     z-index: 1;
+    font-family: Oswald;
 }
 
-div.janela-subtitle {
+p.title, p.title-stats{
+    font-family: Bebas Neue;
+}
+
+p.title-stats{
+    text-align: center;
+}
+
+div.janela-body {
     font-size: 20px;
     font-weight: 200;
 }
 
+div.gameover {
+    background: #732C4D;
+}
+
+div.winner {
+    background: #2C967C;
+}
 
 button.close-button{
     position: absolute;
@@ -51,10 +91,12 @@ button.close-button{
     z-index: 1;
 }
 
-h1.titulo {
-    font-weight: bold;
-    color: #E9C46A;
-    font-size: 24px;
+button.btn-gameover {
+    background: #F5B7D1;
+}
+
+button.btn-winner {
+    background: #88E3CC;
 }
 
 div.topo {
@@ -79,38 +121,49 @@ button:hover {
  }
 
 button.helpers {
-    
     width: 35px;
     font-size: 28px;
     max-width: 40px;
     font-size: 13px;
  }
 
-button.keyboard {
+
+div.kb_linha, div.kb_linha2,div.kb_linha3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+div.kb_linha2 {
+    margin-left: 20px;
+    margin-right: 20px
+}
+div.kb_linha3 {
+    margin-left: 70px;
+    margin-right: 70px
+}
+
+button.keyboard, button.keyboard-disabled, button.keyboard-enter, button.placar {
+    display: flex;
+    flex: 1;
     font-size: 20px;
+    width: 40px;
     height: 70px;
-    max-width: 80px;
+    max-width: 70px;
     padding: 12px;
- }
+}
 
 button.keyboard-disabled {
     opacity: 30%;
     cursor: not-allowed;
     pointer-events: none;
-    font-size: 20px;
-    height: 70px;
-    max-width: 80px;
-    padding: 12px;
- }
+}
 
 button.keyboard-enter {
-    font-size: 20px;
-    height: 68px;
-    padding: 12px;
     grid-column: span 3;
- }
+}
 
- button.keyboard-enter-disabled {
+button.keyboard-enter-disabled {
     opacity: 30%;
     cursor: not-allowed;
     pointer-events: none;
@@ -118,9 +171,15 @@ button.keyboard-enter {
     height: 70px;
     padding: 12px;
     grid-column: span 3;
- }
+}
 
- div.tentativas-box{
+button.placar {
+    padding: 30px;
+    width: 80px;
+    max-width: none;
+}
+
+div.tentativas-box{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -128,15 +187,15 @@ button.keyboard-enter {
     margin-top: 0px;
     items-gap: 8px;
     justify-content: center;
- }
+}
 
- div.banco, div.banco-erro {
+div.banco, div.banco-erro {
     display: flex;
     flex: 1;
     justify-content: center;
     background: #454465;
-    width: 48px;
-    height: 56px;
+    width: 36px;
+    aspect-ratio: 1 / 1.3;
     max-width: 60px; 
     margin: 4px;
     border-radius: 8px;
@@ -144,30 +203,28 @@ button.keyboard-enter {
     transition: 0.3s;
     z-index: -1;
 
- }
+}
 
- div.banco-erro {
+div.banco-erro {
     align-items: center;
     font-size: 28px;
     background: #753050; /* 952540 */
     transform: rotateY(0deg);
 
- }
+}
 
- div.letras-div {
+div.letras-div {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
-    margin: 12px;
-    padding: 12px;
+    gap: 6px;
+    padding: 12px 20px 0 20px;;
     width: 100%;
-    margin-bottom: 20px;
-    items-gap: 8px;
+    margin-bottom: 40px;
     justify-content: center;
     align-content: center;
     z-index: -2;
- }
+}
 
 p1.letra-input, p1.letra-correct,  p1.letra-hidden {
     display: flex;
@@ -176,7 +233,7 @@ p1.letra-input, p1.letra-correct,  p1.letra-hidden {
     align-items: center;
     font-size: 28px;
     width: 40px;
-    height: 70px;
+    aspect-ratio: 1/1.3;
     max-width: 60px; 
     background: #AB74BB;  /* #AF64A5 */
     border-radius: 8px;
@@ -189,10 +246,29 @@ p1.letra-correct {
     transform: rotateY(0deg);
  }
 
- p1.blank {
+p1.blank {
     max-width: 20px;
- }
+}
 
- p1.letra-hidden {
+p1.letra-hidden {
     color: transparent;
- }
+}
+
+.line {
+    display: flex;
+    flex: 1;
+    height: 0.05rem;
+    background: white;
+    margin-left: 16px;
+    margin-right: 16px
+}
+
+.line-janela {
+    display: flex;
+    flex: 1;
+    height: 0.05rem;
+    background: white;
+    margin-left: 4px;
+    margin-right: 20px
+}
+

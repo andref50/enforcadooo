@@ -13,13 +13,13 @@
 
         <!-- TÍTULO -->
         <div class="grid justify-center">
-          <h1 class="titulo">ENFORCADO</h1>
+          <h1 class="logo">ENFORCADO</h1>
         </div>
 
         <!-- DIREITA -->
         <div class="flex-1 fex-row justify-self-end">
-          <button class="helpers">S</button>
-          <button class="helpers">?</button>
+          <button @click="$emit('janelaStatsEvent')" class="helpers">III</button>
+          <button @click="$emit('janelaAjudaEvent')" class="helpers">?</button>
         </div>
       </div>
     </div>

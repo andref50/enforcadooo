@@ -1,17 +1,29 @@
 <script setup>
-  import { ref, onMounted, cloneVNode } from 'vue'
+  import {onMounted} from 'vue'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
 
-  // onMounted(async () => {});
-  onMounted(gameStart);
 
+  // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const palavra = "CALENDÁRIO".toUpperCase();
+  const palavra = "ARAPUÃ".toUpperCase();
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
   let errors = 0;
 
+  let totalVitorias = 0;
+  let totalDerrotas = 0;
+
+  // WINDOW MANAGER BOOL
+  let isWindowOpen = false; 
+
+  let popup_overlay = document.getElementsByClassName('popup-overlay');
+
+    onMounted(gameStart);
+    /* 
+    onMounted(async () => {}); */
+
+  // ------- JOGO ------- //
   function mainFunction(kp){
 
     kp = kp.toUpperCase();
@@ -20,35 +32,37 @@
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
 
 
-    // CAPTURA ACERTOS
+    //  CAPTURA ACERTOS //
     let captureError = false;
      arrSelectdiv.forEach((element, i) => { 
        if(normalizeAcento(element.innerHTML) === kp) {
             setTimeout(() => {
             element.classList = 'letra-correct';
             captureError = true;
-
-        }, i * 30)} // SET TIMER LETTER REVEAL
+        
+        }, i * 30)} // SET TIMER LETTER REVEAL //
       });
 
       arrPalavra = arrPalavra.replaceAll(kp, '');
       if (!arrPalavra) { gameWin() }
 
-    // CAPTURA ERROS
+
+    //  CAPTURA ERROS //
     if(!palavra.includes(kp) && kp != 'ENTER'){
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
-
       errors += 1;
-
       if(errors == 6) {
-        gameOver() ;
-        arrSelectdiv.forEach(element => { element.classList = 'letra-correct' });
+        arrSelectdiv.forEach((element, i) => { 
+          setTimeout(() => {
+            element.classList = 'letra-correct' }, i * 100);
+          });
+          gameOver();
       }
     }
   }
 
-  function criaLetras() {
+  function criaJogo() {
     var div = document.getElementsByClassName("letras-div").item(0); 
     for(let c in palavra){
       var p = document.createElement('p1');
@@ -66,86 +80,195 @@
   arrButtons.forEach(element => {
     element.classList = 'keyboard-disabled'
     })
-    const enterDisable = Array.prototype.slice.call(document.getElementsByClassName('keyboard-enter'))
-    enterDisable[0].classList = 'keyboard-enter-disabled';
+    // const enterDisable = Array.prototype.slice.call(document.getElementsByClassName('keyboard-enter'))
+    // enterDisable[0].classList = 'keyboard-enter-disabled';
   }
 
-function gameOver() {
-  disableKeyboard();
-  const gameoverWindow = document.getElementsByClassName('gameover');
-  gameoverWindow.item(0).style.opacity = '100'
+  function gameWin(){
+    disableKeyboard();
+    popupoverlay('60%')
+    const winnerWindow = document.getElementsByClassName('winner');
+    winnerWindow.item(0).style.opacity = '100'
+    totalVitorias += 1;
+    updateCookie(totalVitorias, totalDerrotas);
   }
 
-function gameWin(){
-  disableKeyboard();
-  const winnerWindow = document.getElementsByClassName('winner');
-  winnerWindow.item(0).style.opacity = '100'
-}
+  function gameOver() {
+    disableKeyboard();
+    popupoverlay('60%')
+    const gameoverWindow = document.getElementsByClassName('gameover');
+    gameoverWindow.item(0).style.opacity = '100';
+    totalDerrotas += 1;
+    updateCookie(totalVitorias, totalDerrotas);
+    }
 
-function janelaDica(){
-  const winnerWindow = document.getElementsByClassName('dica');
-  winnerWindow.item(0).style.opacity = '100'
-  
-}
+  function janelaDica(){
+    if(!isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const winnerWindow = document.getElementsByClassName('dica');
+      winnerWindow.item(0).style.opacity = '100';
+    }
+  }
 
-function closeWindow(e){
-  e.target.parentNode.style.opacity = "0"
-}
+  function janelaAjuda(){
+    if(!isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const ajudawindow = document.getElementsByClassName('ajuda');
+      ajudawindow.item(0).style.opacity = '100';
+    }
+  }
 
-function gameStart(){
-  document.cookie = 'vitorias=0; derrotas=0';
-  var allCookies = document.cookie;
-  console.log(document.cookie)
-  console.log(allCookies)
-  criaLetras();
-}
+  function janelaStats(){
+    if(!isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const statsWindow = document.getElementsByClassName('stats');
+      statsWindow.item(0).style.opacity = '100';
+    }
+  }
+
+  function closeWindow(e){
+    e.target.parentNode.style.opacity = "0";
+    popupoverlay('0%');
+    isWindowOpen = false;
+  }
+
+  function popupoverlay(po){
+    popup_overlay.item(0).style.opacity = po;
+  }
+
+  function setCookie(){
+    document.cookie = 'vitorias=0';
+    document.cookie = 'derrotas=0';
+  }
+
+  function getCookie(){
+    const readCookie = document.cookie;
+    let eachElement = readCookie.split(';').map((e) => e.trim());
+
+    const element1 = Number(eachElement[0].split('=')[1])
+    const element2 = Number(eachElement[1].split('=')[1])
+
+    if(eachElement[0].includes('vitorias')){
+      totalVitorias = element1;
+      totalDerrotas = element2;
+    } else {
+      totalVitorias = element2;
+      totalDerrotas = element1;
+    }
+    console.log(totalVitorias);
+    console.log(totalDerrotas);
+  }
+
+  function updateCookie (vitoria, derrota){
+    document.cookie = 'vitorias=' + vitoria
+    document.cookie = 'derrotas=' + derrota
+    console.log(document.cookie)
+
+  }
+
+  function gameStart(){
+    if(document.cookie.indexOf('vitorias') == -1 ){ setCookie() }
+    else { getCookie() }
+    console.log(document.cookie)
+    criaJogo();
+  }
 </script>
 
 <template>
 
   <!-- CONTAINER -->
   <div class="container h-screen w-screen flex flex-col">
+    <div class="popup-overlay"></div>
 
     <!-- TOPO -->
-    <Topo @janelaDicaEvent="janelaDica"/>
+    <Topo @janelaDicaEvent="janelaDica"
+          @janelaAjudaEvent="janelaAjuda"
+          @janelaStatsEvent="janelaStats"/>
 
     <!-- PRINCIPAL -->
     <div class="flex flex-1 flex-col justify-center items-center">
 
       <!-- GAME OVER -->
       <div class="janela gameover">
-        <button @click="closeWindow" class="close-button"> x </button>
+        <button @click="closeWindow" class="close-button btn-gameover"> x </button>
         <!-- <div class="decorationBar"></div> -->
         <div class="janela-title">
           <p>Game over :(</p>
         </div>
-        <div class="janela-subtitle">
-          <p>Mas não desanima!</p>
-          <p>Tem uma palavra nova todo dia ;)</p>
+        <div class="janela-body">
+          <p>Não desanima!</p>
+          <p>Amanhã tem mais ;)</p>
         </div>
       </div>
 
       <!-- WINNER -->
       <div class="janela winner">
-        <button @click="closeWindow" class="close-button"> x </button>
+        <button @click="closeWindow" class="close-button btn-winner"> x </button>
         <div class="janela-title">
-          <p>Acertou :)</p>
+          <p>Parabéns :)</p>
         </div>
-        <div class="janela-subtitle">
-          <p>Amanhã tem</p>
+        <div class="janela-body">
+          <p>Volte amanhã para</p>
           <p>um novo desafio :)</p>
         </div>
       </div>
 
-      <!-- WINNER -->
+      <!-- DICA -->
       <div class="janela dica">
         <button @click="closeWindow" class="close-button"> x </button>
         <div class="janela-title">
-          <p>Dica: 👀</p>
+          <p class="title">Dica: 👀</p>
         </div>
-        <div class="janela-subtitle">
+        <div class="janela-body">
           <p>A Thais Mara</p>
           <p>gosta muito de fazer :)</p>
+        </div>
+      </div>
+
+      <!-- ESTATISICAS -->
+      <div class="janela stats">
+        <button @click="closeWindow" class="close-button"> x </button>
+        <div class="janela-title">
+          <p class="title-stats">Sua evolução</p>
+        </div>
+        <div class="janela-body">
+
+          <div class="flex flex-row flex-1 justify-center">
+
+            <div class="flex flex-col items-center px-8">
+              <button class="placar">{{ totalVitorias }}</button>
+              <p>Vitórias </p>
+            </div>
+
+            <div class="flex flex-col items-center px-8">
+              <button class="placar">{{ totalDerrotas }}</button>
+              <p>Derrotas </p>
+            </div>
+
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- AJUDA -->
+      <div class="janela ajuda">
+        <button @click="closeWindow" class="close-button"> x </button>
+        <div class="janela-title">
+          <p class="title">Como jogar:</p>
+        </div>
+        <div class="janela-body">
+          <p>Enforcad.ooo é o jogo da forca </p>
+          <p>que você já conhece de cara nova :)</p>
+          <br>
+          <p>Tente adivinhar a palavra secreta</p>
+          <p>clicando nas letras.</p>
+          <br>
+          <p>Mas cuidado: cada erro te deixa  </p>
+          <p> mais próximo de um trágico fim. </p>
+          <br>
         </div>
       </div>
       
@@ -158,19 +281,21 @@ function gameStart(){
         </div>
 
         <!-- BANCO -->
-        <div class="flex flex-col mb-0">
-          <div class="flex justify-center">
-            <p>Tentativas</p>
+        <div class="">
+          <div class="flex justify-center items-center">
+            <div class="line"></div>
+            <div class="p-line"> <p>Tentativas</p> </div>
+            <div class="line"></div>
           </div>
  
-        <div class="tentativas-box">
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-        </div>
+          <div class="tentativas-box">
+            <div class="banco"></div>
+            <div class="banco"></div>
+            <div class="banco"></div>
+            <div class="banco"></div>
+            <div class="banco"></div>
+            <div class="banco"></div>
+          </div>
         </div>
       </div>
         

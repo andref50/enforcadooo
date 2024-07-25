@@ -20,7 +20,8 @@
 
   <div class="flex-1 m-2 mb-6 max-w-3xl">
     <!-- LINHA 1 -->
-    <div class="grid grid-cols-10">
+    <!-- <div class="grid grid-cols-10"> -->
+    <div class="kb_linha">
       <button @click="kbTrigger" class="keyboard kb_q"> Q </button>
       <button @click="kbTrigger" class="keyboard kb_w"> W </button>
       <button @click="kbTrigger" class="keyboard kb_e"> E </button>
@@ -33,7 +34,8 @@
       <button @click="kbTrigger" class="keyboard kb_p"> P </button>
     </div>
     <!-- LINHA 2 -->
-    <div class="grid grid-cols-10">
+    <!-- <div class="grid grid-cols-10"> -->
+    <div class="kb_linha2">
       <button @click="kbTrigger" class="keyboard kb_a"> A </button>
       <button @click="kbTrigger" class="keyboard kb_s"> S </button>
       <button @click="kbTrigger" class="keyboard kb_d"> D </button>
@@ -43,10 +45,11 @@
       <button @click="kbTrigger" class="keyboard kb_j"> J </button>
       <button @click="kbTrigger" class="keyboard kb_k"> K </button>
       <button @click="kbTrigger" class="keyboard kb_l"> L </button>
-      <!-- <button class="keyboard"> < </button> -->
     </div>
     <!-- LINHA 3 -->
-    <div class="grid grid-cols-10">
+    <!-- <div class="grid grid-cols-10"> -->
+    <div class="kb_linha3">
+
       <button @click="kbTrigger" class="keyboard kb_z"> Z </button>
       <button @click="kbTrigger" class="keyboard kb_x"> X </button>
       <button @click="kbTrigger" class="keyboard kb_c"> C </button>
@@ -54,7 +57,7 @@
       <button @click="kbTrigger" class="keyboard kb_b"> B </button>
       <button @click="kbTrigger" class="keyboard kb_n"> N </button>
       <button @click="kbTrigger" class="keyboard kb_m"> M </button>
-      <button @click="kbTriggerEnter" class="keyboard-enter kb_enter"> ENTER </button>
+      <!-- <button @click="kbTriggerEnter" class="keyboard-enter kb_enter"> ENTER </button> -->
     </div>
   </div>
 </template>
