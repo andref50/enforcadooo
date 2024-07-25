@@ -80,15 +80,14 @@
   arrButtons.forEach(element => {
     element.classList = 'keyboard-disabled'
     })
-    // const enterDisable = Array.prototype.slice.call(document.getElementsByClassName('keyboard-enter'))
-    // enterDisable[0].classList = 'keyboard-enter-disabled';
   }
 
   function gameWin(){
     disableKeyboard();
     popupoverlay('60%')
     const winnerWindow = document.getElementsByClassName('winner');
-    winnerWindow.item(0).style.opacity = '100'
+    winnerWindow.item(0).style.opacity = '100%'
+    winnerWindow.item(0).style.visibility = "visible";
     totalVitorias += 1;
     updateCookie(totalVitorias, totalDerrotas);
   }
@@ -97,7 +96,8 @@
     disableKeyboard();
     popupoverlay('60%')
     const gameoverWindow = document.getElementsByClassName('gameover');
-    gameoverWindow.item(0).style.opacity = '100';
+    gameoverWindow.item(0).style.opacity = '100%';
+    gameoverWindow.item(0).style.visibility = "visible";
     totalDerrotas += 1;
     updateCookie(totalVitorias, totalDerrotas);
     }
@@ -106,17 +106,19 @@
     if(!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
-      const winnerWindow = document.getElementsByClassName('dica');
-      winnerWindow.item(0).style.opacity = '100';
+      const dicaWindow = document.getElementsByClassName('dica');
+      dicaWindow.item(0).style.opacity = '100%';
+      dicaWindow.item(0).style.visibility = "visible";
     }
   }
 
   function janelaAjuda(){
     if(!isWindowOpen) {
       isWindowOpen = true;
-      popupoverlay('60%')
+      popupoverlay('60%');
       const ajudawindow = document.getElementsByClassName('ajuda');
-      ajudawindow.item(0).style.opacity = '100';
+      ajudawindow.item(0).style.opacity = '100%';
+      ajudawindow.item(0).style.visibility = "visible";
     }
   }
 
@@ -125,12 +127,15 @@
       isWindowOpen = true;
       popupoverlay('60%')
       const statsWindow = document.getElementsByClassName('stats');
-      statsWindow.item(0).style.opacity = '100';
+      statsWindow.item(0).style.opacity = '100%';
+      statsWindow.item(0).style.visibility = "visible";
     }
   }
 
   function closeWindow(e){
-    e.target.parentNode.style.opacity = "0";
+    e.target.parentNode.style.opacity = "0%";
+    e.target.parentNode.style.visibility = "hidden";
+
     popupoverlay('0%');
     isWindowOpen = false;
   }
@@ -196,7 +201,7 @@
         <button @click="closeWindow" class="close-button btn-gameover"> x </button>
         <!-- <div class="decorationBar"></div> -->
         <div class="janela-title">
-          <p>Game over :(</p>
+          <p class="title">Game over :(</p>
         </div>
         <div class="janela-body">
           <p>Não desanima!</p>
@@ -208,11 +213,11 @@
       <div class="janela winner">
         <button @click="closeWindow" class="close-button btn-winner"> x </button>
         <div class="janela-title">
-          <p>Parabéns :)</p>
+          <p class="title">Parabéns :)</p>
         </div>
         <div class="janela-body">
-          <p>Volte amanhã para</p>
-          <p>um novo desafio :)</p>
+          <p>Você adivinhou a</p>
+          <p>palavra de hoje :)</p>
         </div>
       </div>
 
@@ -235,21 +240,16 @@
           <p class="title-stats">Sua evolução</p>
         </div>
         <div class="janela-body">
-
           <div class="flex flex-row flex-1 justify-center">
-
             <div class="flex flex-col items-center px-8">
-              <button class="placar">{{ totalVitorias }}</button>
-              <p>Vitórias </p>
+              <button class="placar"> {{ totalVitorias }} </button>
+              <p>VITÓRIAS</p>
             </div>
-
             <div class="flex flex-col items-center px-8">
-              <button class="placar">{{ totalDerrotas }}</button>
-              <p>Derrotas </p>
+              <button class="placar"> {{ totalDerrotas }} </button>
+              <p>DERROTAS</p>
             </div>
-
           </div>
-          
         </div>
       </div>
 
@@ -264,10 +264,9 @@
           <p>que você já conhece de cara nova :)</p>
           <br>
           <p>Tente adivinhar a palavra secreta</p>
-          <p>clicando nas letras.</p>
-          <br>
-          <p>Mas cuidado: cada erro te deixa  </p>
-          <p> mais próximo de um trágico fim. </p>
+          <p>clicando nas letras, mas cuidado:</p>
+          <p>cada erro te deixa mais próximo</p>
+          <p>de um trágico fim. </p>
           <br>
         </div>
       </div>
@@ -277,7 +276,7 @@
 
         <!-- BONECO -->
         <div class="flex flex-1 mb-4 justify-center">
-          <button>PALAVRA</button>
+
         </div>
 
         <!-- BANCO -->
