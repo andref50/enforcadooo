@@ -6,42 +6,46 @@
   // onMounted(async () => {});
   onMounted(gameStart);
 
-  const palavra = "ARTESANATO".toUpperCase();
-  let arrPalavra = palavra.toUpperCase();
+  function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
+
+  const palavra = "CALENDÁRIO".toUpperCase();
+  let arrPalavra = normalizeAcento(palavra.toUpperCase())
   let errors = 0;
 
-  const subsChars = {
-  }
+  function mainFunction(kp){
 
-  const timer = ms => new Promise(res => setTimeout(res, ms));
-
-  async function receivedKeyPressed(kp){
     kp = kp.toUpperCase();
 
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
 
+
+    // CAPTURA ACERTOS
+    let captureError = false;
+     arrSelectdiv.forEach((element, i) => { 
+       if(normalizeAcento(element.innerHTML) === kp) {
+            setTimeout(() => {
+            element.classList = 'letra-correct';
+            captureError = true;
+
+        }, i * 30)} // SET TIMER LETTER REVEAL
+      });
+
+      arrPalavra = arrPalavra.replaceAll(kp, '');
+      if (!arrPalavra) { gameWin() }
+
+    // CAPTURA ERROS
     if(!palavra.includes(kp) && kp != 'ENTER'){
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
+
       errors += 1;
+
       if(errors == 6) {
         gameOver() ;
         arrSelectdiv.forEach(element => { element.classList = 'letra-correct' });
       }
     }
-
-    let captureError = false;
-     arrSelectdiv.forEach(async element => { 
-      if(element.innerHTML === kp) {
-        element.classList = 'letra-correct';
-        captureError = true;
-        }
-        await timer(3000);
-      });
-
-      arrPalavra = arrPalavra.replaceAll(kp, '');
-      if (!arrPalavra) { gameWin() }
   }
 
   function criaLetras() {
@@ -181,7 +185,7 @@ function gameStart(){
 
       <!-- TECLADO -->
       <div class="flex justify-center">
-        <Teclado @keyPressed="receivedKeyPressed"/>
+        <Teclado @keyPressed="mainFunction"/>
       </div>
 
   </div>
