@@ -2,30 +2,39 @@
   import {onMounted} from 'vue'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
-
+  import svgstate1 from './assets/svg/svg-state-1.svg'
+  import svgstate2 from './assets/svg/svg-state-2.svg'
+  import svgstate3 from './assets/svg/svg-state-3.svg'
+  import svgstate4 from './assets/svg/svg-state-4.svg'
+  import svgstate5 from './assets/svg/svg-state-5.svg'
+  import svgstate6 from './assets/svg/svg-state-6.svg'
+  import svgstate7 from './assets/svg/svg-state-7.svg'
 
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const palavra = "ARAPUÃ".toUpperCase();
+  const palavra = "AUTOMÁTICO".toUpperCase();
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
   let errors = 0;
 
-  let totalVitorias = 0;
-  let totalDerrotas = 0;
+  const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
+  let atualState = bodyStates[0];
+
+  var totalVitorias = 0;
+  var totalDerrotas = 0;
+  getCookie();
 
   // WINDOW MANAGER BOOL
   let isWindowOpen = false; 
 
   let popup_overlay = document.getElementsByClassName('popup-overlay');
 
-    onMounted(gameStart);
+  onMounted(gameStart);
     /* 
     onMounted(async () => {}); */
 
   // ------- JOGO ------- //
   function mainFunction(kp){
-
     kp = kp.toUpperCase();
 
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
@@ -39,10 +48,8 @@
             setTimeout(() => {
             element.classList = 'letra-correct';
             captureError = true;
-        
         }, i * 30)} // SET TIMER LETTER REVEAL //
       });
-
       arrPalavra = arrPalavra.replaceAll(kp, '');
       if (!arrPalavra) { gameWin() }
 
@@ -51,11 +58,18 @@
     if(!palavra.includes(kp) && kp != 'ENTER'){
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
+
       errors += 1;
+
+      atualState = bodyStates[errors];
+      const image = document.getElementsByClassName('corda');
+      image.item(0).src = atualState;
+
+
       if(errors == 6) {
         arrSelectdiv.forEach((element, i) => { 
           setTimeout(() => {
-            element.classList = 'letra-correct' }, i * 100);
+            element.classList = 'letra-incorrect' }, i * 100);
           });
           gameOver();
       }
@@ -83,23 +97,31 @@
   }
 
   function gameWin(){
+    isWindowOpen = true
     disableKeyboard();
-    popupoverlay('60%')
-    const winnerWindow = document.getElementsByClassName('winner');
-    winnerWindow.item(0).style.opacity = '100%'
-    winnerWindow.item(0).style.visibility = "visible";
+    setTimeout(() => {
+      popupoverlay('60%')
+      const winnerWindow = document.getElementsByClassName('winner');
+      winnerWindow.item(0).style.opacity = '100%'
+      winnerWindow.item(0).style.visibility = "visible";
+    }, 1500)
     totalVitorias += 1;
     updateCookie(totalVitorias, totalDerrotas);
+    document.getElementById('total-win-text').innerHTML = totalVitorias;
   }
 
   function gameOver() {
+    isWindowOpen = 1
     disableKeyboard();
-    popupoverlay('60%')
-    const gameoverWindow = document.getElementsByClassName('gameover');
-    gameoverWindow.item(0).style.opacity = '100%';
-    gameoverWindow.item(0).style.visibility = "visible";
+    setTimeout(() => {
+      popupoverlay('60%')
+      const gameoverWindow = document.getElementsByClassName('gameover');
+      gameoverWindow.item(0).style.opacity = '100%';
+      gameoverWindow.item(0).style.visibility = "visible";
+    }, 1500)
     totalDerrotas += 1;
     updateCookie(totalVitorias, totalDerrotas);
+    document.getElementById('total-lose-text').innerHTML = totalDerrotas;
     }
 
   function janelaDica(){
@@ -123,6 +145,7 @@
   }
 
   function janelaStats(){
+    getCookie();
     if(!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
@@ -163,21 +186,16 @@
       totalVitorias = element2;
       totalDerrotas = element1;
     }
-    console.log(totalVitorias);
-    console.log(totalDerrotas);
   }
 
   function updateCookie (vitoria, derrota){
     document.cookie = 'vitorias=' + vitoria
     document.cookie = 'derrotas=' + derrota
-    console.log(document.cookie)
-
   }
 
   function gameStart(){
     if(document.cookie.indexOf('vitorias') == -1 ){ setCookie() }
-    else { getCookie() }
-    console.log(document.cookie)
+    getCookie()
     criaJogo();
   }
 </script>
@@ -185,7 +203,7 @@
 <template>
 
   <!-- CONTAINER -->
-  <div class="container h-screen w-screen flex flex-col">
+  <div class="container">
     <div class="popup-overlay"></div>
 
     <!-- TOPO -->
@@ -194,12 +212,11 @@
           @janelaStatsEvent="janelaStats"/>
 
     <!-- PRINCIPAL -->
-    <div class="flex flex-1 flex-col justify-center items-center">
+    <div class="secao-principal">
 
       <!-- GAME OVER -->
       <div class="janela gameover">
         <button @click="closeWindow" class="close-button btn-gameover"> x </button>
-        <!-- <div class="decorationBar"></div> -->
         <div class="janela-title">
           <p class="title">Game over :(</p>
         </div>
@@ -242,12 +259,13 @@
         <div class="janela-body">
           <div class="flex flex-row flex-1 justify-center">
             <div class="flex flex-col items-center px-8">
-              <button class="placar"> {{ totalVitorias }} </button>
+              <button class="placar" id="total-win-text"> {{ totalVitorias }} </button>
               <p>VITÓRIAS</p>
             </div>
             <div class="flex flex-col items-center px-8">
-              <button class="placar"> {{ totalDerrotas }} </button>
+              <button class="placar" id="total-lose-text"> {{ totalDerrotas }} </button>
               <p>DERROTAS</p>
+              <br>
             </div>
           </div>
         </div>
@@ -271,32 +289,28 @@
         </div>
       </div>
       
-      <!-- FORCA -->
-      <div class="flex flex-1 flex-col">
 
-        <!-- BONECO -->
-        <div class="flex flex-1 mb-4 justify-center">
+      <!-- BONECO -->
+      <div class="corda-container">
+        <img :src="svgstate1" class="corda"/>
+      </div>
 
+      <!-- BANCO -->
+      <div class="tentativas">
+        <div class="flex justify-center items-center">
+          <p>Tentativas</p>
         </div>
 
-        <!-- BANCO -->
-        <div class="">
-          <div class="flex justify-center items-center">
-            <div class="line"></div>
-            <div class="p-line"> <p>Tentativas</p> </div>
-            <div class="line"></div>
-          </div>
- 
-          <div class="tentativas-box">
-            <div class="banco"></div>
-            <div class="banco"></div>
-            <div class="banco"></div>
-            <div class="banco"></div>
-            <div class="banco"></div>
-            <div class="banco"></div>
-          </div>
+        <div class="tentativas-box">
+          <div class="banco"></div>
+          <div class="banco"></div>
+          <div class="banco"></div>
+          <div class="banco"></div>
+          <div class="banco"></div>
+          <div class="banco"></div>
         </div>
       </div>
+
         
 
       <!----------->
@@ -304,13 +318,10 @@
       <!----------->
       <div class="letras-div">  </div>
 
-
     </div>
 
       <!-- TECLADO -->
-      <div class="flex justify-center">
-        <Teclado @keyPressed="mainFunction"/>
-      </div>
+      <Teclado @keyPressed="mainFunction"/>
 
   </div>
 </template>

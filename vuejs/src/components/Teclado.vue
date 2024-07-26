@@ -18,7 +18,7 @@
 <template>
 <!-- TECLADO -->
 
-  <div class="flex-1 m-2 mb-6 max-w-3xl">
+  <div class="keyboard-div">
     <!-- LINHA 1 -->
     <!-- <div class="grid grid-cols-10"> -->
     <div class="kb_linha">
@@ -49,7 +49,6 @@
     <!-- LINHA 3 -->
     <!-- <div class="grid grid-cols-10"> -->
     <div class="kb_linha3">
-
       <button @click="kbTrigger" class="keyboard kb_z"> Z </button>
       <button @click="kbTrigger" class="keyboard kb_x"> X </button>
       <button @click="kbTrigger" class="keyboard kb_c"> C </button>
