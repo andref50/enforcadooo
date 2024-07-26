@@ -13,7 +13,7 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const palavra = "AUTOMÁTICO".toUpperCase();
+  const palavra = "PLANTÃO".toUpperCase();
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
   let errors = 0;
 
@@ -22,7 +22,6 @@
 
   var totalVitorias = 0;
   var totalDerrotas = 0;
-  getCookie();
 
   // WINDOW MANAGER BOOL
   let isWindowOpen = false; 
@@ -167,10 +166,6 @@
     popup_overlay.item(0).style.opacity = po;
   }
 
-  function setCookie(){
-    document.cookie = 'vitorias=0';
-    document.cookie = 'derrotas=0';
-  }
 
   function getCookie(){
     const readCookie = document.cookie;
@@ -179,7 +174,7 @@
     const element1 = Number(eachElement[0].split('=')[1])
     const element2 = Number(eachElement[1].split('=')[1])
 
-    if(eachElement[0].includes('vitorias')){
+    if(eachElement[0].includes('vitorias=')){
       totalVitorias = element1;
       totalDerrotas = element2;
     } else {
@@ -194,8 +189,10 @@
   }
 
   function gameStart(){
-    if(document.cookie.indexOf('vitorias') == -1 ){ setCookie() }
-    getCookie()
+    if(document.cookie.indexOf('vitorias=') === -1 ){
+      updateCookie(0, 0) 
+    }
+    getCookie();
     criaJogo();
   }
 </script>
@@ -260,11 +257,11 @@
           <div class="flex flex-row flex-1 justify-center">
             <div class="flex flex-col items-center px-8">
               <button class="placar" id="total-win-text"> {{ totalVitorias }} </button>
-              <p>VITÓRIAS</p>
+              <p class="placar-label">VITÓRIAS</p>
             </div>
             <div class="flex flex-col items-center px-8">
               <button class="placar" id="total-lose-text"> {{ totalDerrotas }} </button>
-              <p>DERROTAS</p>
+              <p class="placar-label">DERROTAS</p>
               <br>
             </div>
           </div>
