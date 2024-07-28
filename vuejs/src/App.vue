@@ -13,7 +13,7 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const palavra = "PLANTÃO".toUpperCase();
+  const palavra = "OLÍMPIADAS".toUpperCase();
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
   let errors = 0;
 
