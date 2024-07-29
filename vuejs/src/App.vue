@@ -13,6 +13,21 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
+  const server = import.meta.env.VITE_APP_ROOT_API
+
+  onMounted(gameStart);
+  onMounted(async () => {
+    try {
+      const response = await fetch(server);
+      const dados = await response.json();
+      console.log(dados)
+      
+    } catch (error) {
+      console.log('Error fecthing data.')
+      console.log(error)
+    }
+  });
+
   const palavra = "PÊNDULO".toUpperCase();
   const palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
@@ -38,8 +53,7 @@
   let isWindowOpen = false; 
 
 
-  onMounted(gameStart);
-  /* onMounted(async () => {}); */
+
 
   // ------- JOGO ------- //
   function mainFunction(kp){

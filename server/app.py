@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import requests
 
 
 app = Flask(__name__)
@@ -15,6 +14,8 @@ data = {
         'title': 'Mr.Bean'
         }
 
+data_json = data.json()
+
 accepted = {
     'status': 'OK'
 }
@@ -23,7 +24,7 @@ accepted = {
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
-        return jsonify(data)
+        return jsonify(data_json)
     if request.method == 'POST':
         return jsonify(accepted)
 
