@@ -169,6 +169,11 @@ div.janela-body {
     font-weight: 200;
 }
 
+div.janela-body-dica {
+    font-size: 17px;
+    font-weight: 200;
+}
+
 div.gameover {
     height: 260px;
     padding-top: 60px;
@@ -297,6 +302,14 @@ button.placar {
     padding: 20px;
     width: 15vw;
     pointer-events: none
+}
+button.dica-text-body {
+    font-size: 20px;
+    color: white;
+    background: transparent;
+    padding: 8px;
+    width: 15vw;
+    pointer-events: none;
 }
 
 div.keyboard-div {

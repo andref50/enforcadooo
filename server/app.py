@@ -10,11 +10,9 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 data = {
-        '_id': 0,
-        'title': 'Mr.Bean'
+        'palavra': 'JUDOCA',
+        'dica': 'Esporte'
         }
-
-# data_json = data.json()
 
 accepted = {
     'status': 'OK'
