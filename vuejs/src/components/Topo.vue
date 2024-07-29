@@ -10,6 +10,7 @@
         <!-- ESQUERDA -->
         <div class="flex justify-start items-center item1">
           <button @click="$emit('janelaDicaEvent')" class="helpers">!</button>
+          <button class="placeholder">!</button>
         </div>
 
         <!-- TÍTULO -->
@@ -19,7 +20,7 @@
 
         <!-- DIREITA -->
         <div class="flex-1 fex-row justify-self-end content-center item3">
-          <button @click="$emit('janelaStatsEvent')" class="helpers">III</button>
+          <button @click="$emit('janelaStatsEvent')" class="helpers">ılıı</button>
           <button @click="$emit('janelaAjudaEvent')" class="helpers">?</button>
         </div>
       </div>

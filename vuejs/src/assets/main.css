@@ -51,7 +51,7 @@ div.topo {
     box-shadow: 0px 5px #221235;
     z-index: 1;
     width: 100vw;
-    max-height: 100px;
+    max-height: 60px;
 }
         @media only screen and (max-width: 768px){
             /* For mobile phones: */
@@ -71,10 +71,10 @@ div.topo-subdiv {
     margin: 1vw;
 }
 
-            @media only screen and (min-width: 1200px){
+            @media only screen and (min-width: 768px){
                 /* For mobile phones: */
                 [class*="topo-subdiv"] {
-                width: 50vw;
+                width: 100vw;
                 max-width: 800px;
                 }
             }
@@ -122,8 +122,8 @@ div.corda-container {
 
 div.popup-overlay {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: black;
     opacity: 0%;
     pointer-events: none;
@@ -131,37 +131,62 @@ div.popup-overlay {
 
 div.janela {
     position: absolute;
-    top: 15vh;
+    top: 12vh;
     z-index: 1;
     flex-direction: column;
     background: #433D8B;
-    padding: 10vw;
+    padding: 30px;
     border-radius: 8px;
     opacity: 0%;
     visibility: hidden;
     transition: 0.2s;
+    width: 320px;
+    height: 300px;
     box-shadow: 0px 0px 80px rgba(1, 11, 25, 0.6);
 }
-                @media only screen and (min-width: 1200px) {
-                /* For big screen: */
-                div.janela {
-                    max-width: 600px;
-                    max-height: 500px;
-                    top: 15vh;
-                    padding: 4vw;
-                }
-            }
+
+
+div.dica {
+    height: 210px;
+}
+
+div.stats {
+    height: 260px;
+}
+
+div.ajuda {
+    height: 520px;
+}
 
 div.janela-title {
-    font-size: max(10vw, 20px);
     font-family: Bebas;
-    margin-bottom: 28px;
+    margin-bottom: 8px;
     font-family: Oswald;
 }
 
-p.title, p.title-stats{
+div.janela-body {
+    font-size: 17px;
+    font-weight: 200;
+}
+
+div.gameover {
+    height: 260px;
+    padding-top: 60px;
+    background: #732C4D;
+    transition: 0.1s;
+}
+
+div.winner {
+    height: 260px;
+    padding-top: 60px;
+    background: #2C967C;
+    transition: 0.1s;
+}
+
+p.title, p.title-stats{     
     font-family: Bebas Neue;
     font-weight: 400;
+    font-size: 50px;
     text-shadow: -3px 3px rgba(0,0,0,0.3);
 }
 
@@ -172,12 +197,12 @@ p.title-stats{
             @media only screen and (min-width: 1200px){ 
                 /* For big screen */
                 p.title, p.title-stats {
-                    font-size:80px;
+                    font-size: 60px;
                 }
-}
+            }
 
 p.placar-label {
-    font-size: 3vw;
+    font-size: 16px;
 }
 
             @media only screen and (min-width: 1200px){ 
@@ -187,27 +212,29 @@ p.placar-label {
                 }
             }
 
-div.janela-body {
-    font-size: vw;
-    font-weight: 200;
+p.ajuda-buttons-label {
+    font-size: 18px;
+    font-weight: 400;
+    margin-left: 2vw;
 }
 
-            @media only screen and (min-width: 1200px){ 
-                /* For mobile phones: */
-                div.janela-body {
-                    font-size:24px;
-                }
-            }
-
-div.gameover {
-    background: #732C4D;
-    transition: 0.5s;
+p.dica-text-body {
+    word-wrap: break-word;
+    padding-top: 20px;
 }
 
-div.winner {
-    background: #2C967C;
-    transition: 0.2s;
-}
+
+button {
+    background: #C8ACD6;
+    color: #17153B;
+    font-weight: bold;
+    margin: 0.2rem;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: 0.1s;
+ }
 
 button.close-button{
     position: absolute;
@@ -233,60 +260,20 @@ button.btn-winner {
     background: #88E3CC;
 }
 
-button {
-    background: #C8ACD6;
-    color: #17153B;
-    font-weight: bold;
-    margin: 0.2rem;
-    padding: 8px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: 0.1s;
- }
-
 button:hover {
     background: #DDDDDD;
  }
 
-button.helpers {
+button.helpers, button.placeholder {
     width: 35px;
     max-width: 40px;
     font-size: 0.8rem;
     margin: 2px;
  }
 
- div.keyboard-div {
-    display: flex;
-    width: 100vw;
-    flex-direction: column;
-    margin-bottom: 1rem;
-    padding: 1rem;
+button.placeholder {
+    visibility: hidden;
  }
-
-            @media only screen {
-                /* For mobile phones: */
-                [class*="keyboard-div"] {
-                width: 100%;
-                }
-            }
-
-
-div.kb_linha, div.kb_linha2,div.kb_linha3 {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-
-div.kb_linha2 {
-    margin-left: 7%;
-    margin-right: 7%;
-}
-div.kb_linha3 {
-    margin-left: 15%;
-    margin-right: 15%;
-}
 
 button.keyboard, button.keyboard-disabled, button.keyboard-enter, button.placar {
     display: flex;
@@ -310,6 +297,37 @@ button.placar {
     padding: 20px;
     width: 15vw;
     pointer-events: none
+}
+
+div.keyboard-div {
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding: 1rem;
+ }
+
+            @media only screen {
+                /* For mobile phones: */
+                [class*="keyboard-div"] {
+                width: 100%;
+                }
+            }
+
+div.kb_linha, div.kb_linha2,div.kb_linha3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+
+div.kb_linha2 {
+    margin-left: 7%;
+    margin-right: 7%;
+}
+div.kb_linha3 {
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 div.tentativas {
@@ -336,8 +354,8 @@ div.banco, div.banco-erro {
     background: #454465;
     width: 10vw;
     height: 10vw;
-    max-width: 80px;
-    max-height: 80px;
+    max-width: 50px;
+    max-height: 50px;
     margin: 2px;
     padding: 20px;
     border-radius: 8px;
@@ -360,29 +378,24 @@ div.letras-div {
     justify-content: center;
     gap: 0.3rem;
     padding: 12px 20px 0 20px;
-    width: 100%;
+    width: 100vw;
     margin-bottom: 1.5rem;
     justify-content: center;
     align-content: center;
     z-index: -2;
 }
 
-            @media only screen and (min-width: 1200px) {
-                /* For bigscreen: */
-                div.letras-div {
-                    max-width: 700px;
-                }
-            }
+
 
 p1.letra-input, p1.letra-correct, p1.letra-incorrect, p1.letra-hidden {
     display: flex;
     flex: 1;
     justify-content: center;
     align-items: center;
-    font-size:24px;
+    font-size: 24px;
     width: 40px;
     aspect-ratio: 1/1.2;
-    max-width: 80px; 
+    max-width: 50px; 
     background: #AB74BB;
     border-radius: 8px;
     transform: rotateY(180deg);

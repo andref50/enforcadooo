@@ -13,8 +13,11 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const palavra = "OLÍMPIADAS".toUpperCase();
+  const palavra = "ÓTIMO".toUpperCase();
+  const palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
+  const dica = "Balança";
+
   let errors = 0;
 
   const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
@@ -23,14 +26,20 @@
   var totalVitorias = 0;
   var totalDerrotas = 0;
 
+  let firstPlay = false;
+
+  if(!checkCookie()){ 
+      setCookie();
+      firstPlay = true;
+    }
+  getCookie();
+
   // WINDOW MANAGER BOOL
   let isWindowOpen = false; 
 
-  let popup_overlay = document.getElementsByClassName('popup-overlay');
 
   onMounted(gameStart);
-    /* 
-    onMounted(async () => {}); */
+  /* onMounted(async () => {}); */
 
   // ------- JOGO ------- //
   function mainFunction(kp){
@@ -47,14 +56,15 @@
             setTimeout(() => {
             element.classList = 'letra-correct';
             captureError = true;
-        }, i * 30)} // SET TIMER LETTER REVEAL //
-      });
-      arrPalavra = arrPalavra.replaceAll(kp, '');
-      if (!arrPalavra) { gameWin() }
+        }, i * 30)
+      } // SET TIMER LETTER REVEAL //
+    });
+    arrPalavra = arrPalavra.replaceAll(kp, '');
+    if (!arrPalavra) { gameWin() }
 
 
     //  CAPTURA ERROS //
-    if(!palavra.includes(kp) && kp != 'ENTER'){
+    if(!palavraNormalize.includes(kp)){
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
 
@@ -110,7 +120,7 @@
   }
 
   function gameOver() {
-    isWindowOpen = 1
+    isWindowOpen = true
     disableKeyboard();
     setTimeout(() => {
       popupoverlay('60%')
@@ -140,6 +150,7 @@
       const ajudawindow = document.getElementsByClassName('ajuda');
       ajudawindow.item(0).style.opacity = '100%';
       ajudawindow.item(0).style.visibility = "visible";
+
     }
   }
 
@@ -157,13 +168,20 @@
   function closeWindow(e){
     e.target.parentNode.style.opacity = "0%";
     e.target.parentNode.style.visibility = "hidden";
-
     popupoverlay('0%');
     isWindowOpen = false;
   }
 
   function popupoverlay(po){
+    const popup_overlay = document.getElementsByClassName('popup-overlay');
     popup_overlay.item(0).style.opacity = po;
+  }
+
+  function checkCookie(){
+    if(document.cookie.split(';').some((item) => item.trim().startsWith('vitorias='))){
+      return 1;
+    }
+    return 0;
   }
 
 
@@ -184,17 +202,24 @@
   }
 
   function updateCookie (vitoria, derrota){
-    document.cookie = 'vitorias=' + vitoria
-    document.cookie = 'derrotas=' + derrota
+      document.cookie = 'vitorias=' + vitoria;
+      document.cookie = 'derrotas=' + derrota;
   }
 
-  function gameStart(){
-    if(document.cookie.indexOf('vitorias=') === -1 ){
-      updateCookie(0, 0) 
-    }
-    getCookie();
-    criaJogo();
+  function setCookie(){
+    document.cookie = 'vitorias=0';
+    document.cookie = 'derrotas=0';
   }
+
+
+  function gameStart(){
+    if (firstPlay){
+      janelaAjuda();
+    }
+    criaJogo();
+    firstPlay = false;
+  }
+
 </script>
 
 <template>
@@ -242,8 +267,7 @@
           <p class="title">Dica: 👀</p>
         </div>
         <div class="janela-body">
-          <p>A Thais Mara</p>
-          <p>gosta muito de fazer :)</p>
+          <p class="dica-text-body"> {{  dica }}</p>
         </div>
       </div>
 
@@ -278,11 +302,25 @@
           <p>Enforcad.ooo é o jogo da forca </p>
           <p>que você já conhece de cara nova :)</p>
           <br>
-          <p>Tente adivinhar a palavra secreta</p>
-          <p>clicando nas letras, mas cuidado:</p>
-          <p>cada erro te deixa mais próximo</p>
-          <p>de um trágico fim. </p>
+          <p>Tente adivinhar a palavra secreta 
+            clicando nas letras, mas cuidado: 
+            cada erro te deixa mais próximo 
+            de um trágico fim. </p>
           <br>
+          <div class="flex flex-col">
+            <div class="flex flex-row items-center">
+              <button class="helpers">!</button>
+              <p class="ajuda-buttons-label">dica</p>
+            </div>
+            <div class="flex flex-row items-center">
+              <button class="helpers">ılıı</button>
+              <p class="ajuda-buttons-label">placar</p>
+            </div>
+            <div class="flex flex-row items-center">
+              <button class="helpers">?</button>
+              <p class="ajuda-buttons-label">ajuda </p>
+            </div>
+          </div>
         </div>
       </div>
       
