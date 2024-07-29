@@ -13,6 +13,7 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
+<<<<<<< HEAD
   const server = import.meta.env.VITE_APP_ROOT_API
 
   onMounted(gameStart);
@@ -29,6 +30,9 @@
   });
 
   const palavra = "PÊNDULO".toUpperCase();
+=======
+  const palavra = "ÓTIMO".toUpperCase();
+>>>>>>> parent of ae973fb (teste git pull)
   const palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
   let arrPalavra = normalizeAcento(palavra.toUpperCase())
   const dica = "Balança";
