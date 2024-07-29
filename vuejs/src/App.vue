@@ -1,5 +1,5 @@
 <script setup>
-  import {onMounted} from 'vue'
+  import {onMounted, ref} from 'vue'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
   import svgstate1 from './assets/svg/svg-state-1.svg'
@@ -13,27 +13,37 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-  const server = import.meta.env.VITE_APP_ROOT_API
+  const server = import.meta.env.VITE_APP_API
+  const API_palavra = ref('')
+  const API_dica = ref('')
+  let palavra = ref('')
+  let dica = ''
+  let palavraNormalize = ref('')
+  let arrPalavra = ref('')
 
-  onMounted(gameStart);
   onMounted(async () => {
     try {
       const response = await fetch(server);
       const dados = await response.json();
+      API_palavra.value = dados['palavra'];
+      API_dica.value = dados['dica'];
       console.log(dados)
-      
-    } catch (error) {
+      } catch (error) {
       console.log('Error fecthing data.')
-      console.log(error)
-    }
+      }
+
+    palavra = API_palavra.value.toUpperCase();
+    dica = API_dica.value;
+    palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    arrPalavra = normalizeAcento(palavra.toUpperCase())
+
+    gameStart();
   });
 
-  const palavra = "PÊNDULO".toUpperCase();
-  const palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-  let arrPalavra = normalizeAcento(palavra.toUpperCase())
-  const dica = "Balança";
-
   let errors = 0;
+
+  // WINDOW MANAGER BOOL
+  let isWindowOpen = false; 
 
   const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
   let atualState = bodyStates[0];
@@ -49,11 +59,6 @@
     }
   getCookie();
 
-  // WINDOW MANAGER BOOL
-  let isWindowOpen = false; 
-
-
-
 
   // ------- JOGO ------- //
   function mainFunction(kp){
@@ -63,7 +68,7 @@
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
 
 
-    //  CAPTURA ACERTOS //
+    //  ------------ CAPTURA ACERTOS --------------- //
     let captureError = false;
      arrSelectdiv.forEach((element, i) => { 
        if(normalizeAcento(element.innerHTML) === kp) {
@@ -77,7 +82,7 @@
     if (!arrPalavra) { gameWin() }
 
 
-    //  CAPTURA ERROS //
+    //  ------------------ CAPTURA ERRO -------------------- //
     if(!palavraNormalize.includes(kp)){
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
@@ -87,7 +92,6 @@
       atualState = bodyStates[errors];
       const image = document.getElementsByClassName('corda');
       image.item(0).src = atualState;
-
 
       if(errors == 6) {
         arrSelectdiv.forEach((element, i) => { 
@@ -148,6 +152,7 @@
     }
 
   function janelaDica(){
+    updateDica();
     if(!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
@@ -198,7 +203,6 @@
     return 0;
   }
 
-
   function getCookie(){
     const readCookie = document.cookie;
     let eachElement = readCookie.split(';').map((e) => e.trim());
@@ -225,7 +229,6 @@
     document.cookie = 'derrotas=0';
   }
 
-
   function gameStart(){
     if (firstPlay){
       janelaAjuda();
@@ -234,6 +237,9 @@
     firstPlay = false;
   }
 
+  function updateDica(){
+    document.getElementById('dica-text-body').innerHTML = dica;
+  }
 </script>
 
 <template>
@@ -280,8 +286,8 @@
         <div class="janela-title">
           <p class="title">Dica: 👀</p>
         </div>
-        <div class="janela-body">
-          <p class="dica-text-body"> {{  dica }}</p>
+        <div class="janela-body-dica">
+          <button class="dica-text-body" id="dica-text-body"> {{ dica }} </button>
         </div>
       </div>
 
