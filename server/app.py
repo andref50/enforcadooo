@@ -14,7 +14,7 @@ data = {
         'title': 'Mr.Bean'
         }
 
-data_json = data.json()
+# data_json = data.json()
 
 accepted = {
     'status': 'OK'
