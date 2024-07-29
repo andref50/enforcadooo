@@ -24,7 +24,7 @@ accepted = {
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
-        return jsonify(data_json)
+        return jsonify(data)
     if request.method == 'POST':
         return jsonify(accepted)
 
