@@ -95,7 +95,6 @@ div.secao-principal {
     align-items: center;
     align-content: space-betweeen;
     justify-items: center;
-
 }
 
 div.corda-container {
@@ -158,6 +157,14 @@ div.ajuda {
     height: 520px;
 }
 
+            @media only screen and (min-width: 768px){
+                /* For mobile phones: */
+                div.ajuda {
+                width: 400px;
+                height: 480px;
+                }
+            }
+
 div.janela-title {
     font-family: Bebas;
     margin-bottom: 8px;
@@ -198,13 +205,6 @@ p.title, p.title-stats{
 p.title-stats{
     text-align: center;
 }
-
-            @media only screen and (min-width: 1200px){ 
-                /* For big screen */
-                p.title, p.title-stats {
-                    font-size: 60px;
-                }
-            }
 
 p.placar-label {
     font-size: 16px;
@@ -317,6 +317,7 @@ div.keyboard-div {
     width: 100vw;
     flex-direction: column;
     margin-bottom: 1rem;
+    /* margin-top: auto; */
     padding: 1rem;
  }
 
