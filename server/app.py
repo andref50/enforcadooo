@@ -12,7 +12,8 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 data = {
         'palavra': 'JUDOCA',
-        'dica': 'Esporte'
+        'dica': 'Esporte',
+        '_day': 0
         }
 
 

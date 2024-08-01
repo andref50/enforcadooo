@@ -27,7 +27,6 @@
       const dados = await response.json();
       API_palavra.value = dados['palavra'];
       API_dica.value = dados['dica'];
-      console.log(dados)
       } catch (error) {
       console.log('Error fecthing data.')
       }
@@ -38,6 +37,8 @@
     arrPalavra = normalizeAcento(palavra.toUpperCase())
 
     gameStart();
+    console.log(localStorage.length)
+    console.log(localStorage)
   });
 
   let errors = 0;
@@ -79,7 +80,10 @@
       } // SET TIMER LETTER REVEAL //
     });
     arrPalavra = arrPalavra.replaceAll(kp, '');
-    if (!arrPalavra) { gameWin() }
+    if (!arrPalavra) { 
+      // gameWin();
+      endGame('winner');
+    }
 
 
     //  ------------------ CAPTURA ERRO -------------------- //
@@ -98,7 +102,8 @@
           setTimeout(() => {
             element.classList = 'letra-incorrect' }, i * 100);
           });
-          gameOver();
+          // gameOver();
+          endGame('gameover');
       }
     }
   }
@@ -123,33 +128,27 @@
     })
   }
 
-  function gameWin(){
+  function endGame(event){
     isWindowOpen = true
     disableKeyboard();
+
+    if(event === 'winner'){
+      totalVitorias += 1;
+      document.getElementById('total-win-text').innerHTML = totalVitorias;
+    } else {
+      totalDerrotas += 1;
+      document.getElementById('total-lose-text').innerHTML = totalDerrotas;
+    }
+
+    updateCookie(totalVitorias, totalDerrotas);
     setTimeout(() => {
       popupoverlay('60%')
-      const winnerWindow = document.getElementsByClassName('winner');
+      const winnerWindow = document.getElementsByClassName(event);
       winnerWindow.item(0).style.opacity = '100%'
       winnerWindow.item(0).style.visibility = "visible";
-    }, 1500)
-    totalVitorias += 1;
-    updateCookie(totalVitorias, totalDerrotas);
-    document.getElementById('total-win-text').innerHTML = totalVitorias;
+    }, 500)
   }
 
-  function gameOver() {
-    isWindowOpen = true
-    disableKeyboard();
-    setTimeout(() => {
-      popupoverlay('60%')
-      const gameoverWindow = document.getElementsByClassName('gameover');
-      gameoverWindow.item(0).style.opacity = '100%';
-      gameoverWindow.item(0).style.visibility = "visible";
-    }, 1500)
-    totalDerrotas += 1;
-    updateCookie(totalVitorias, totalDerrotas);
-    document.getElementById('total-lose-text').innerHTML = totalDerrotas;
-    }
 
   function janelaDica(){
     updateDica();
@@ -197,36 +196,31 @@
   }
 
   function checkCookie(){
-    if(document.cookie.split(';').some((item) => item.trim().startsWith('vitorias='))){
-      return 1;
-    }
-    return 0;
+    return localStorage.length
   }
 
   function getCookie(){
-    const readCookie = document.cookie;
-    let eachElement = readCookie.split(';').map((e) => e.trim());
-
-    const element1 = Number(eachElement[0].split('=')[1])
-    const element2 = Number(eachElement[1].split('=')[1])
-
-    if(eachElement[0].includes('vitorias=')){
-      totalVitorias = element1;
-      totalDerrotas = element2;
-    } else {
-      totalVitorias = element2;
-      totalDerrotas = element1;
-    }
+    totalVitorias = parseInt(localStorage.getItem('vitorias'));
+    totalDerrotas = parseInt(localStorage.getItem('derrotas'));
   }
 
   function updateCookie (vitoria, derrota){
-      document.cookie = 'vitorias=' + vitoria;
-      document.cookie = 'derrotas=' + derrota;
+      localStorage.setItem('vitorias', vitoria.toString())
+      localStorage.setItem('derrotas', derrota.toString())
   }
 
   function setCookie(){
-    document.cookie = 'vitorias=0';
-    document.cookie = 'derrotas=0';
+    localStorage.setItem('vitorias', 0)
+    localStorage.setItem('derrotas', 0)
+    localStorage.setItem('day', 0)
+    
+    let data = {
+      'vitorias': 0,
+      'derrotas': 0,
+      '_day': 0,
+      'lastState': 'init'
+    }
+    localStorage.setItem('state', JSON.stringify(data))
   }
 
   function gameStart(){
