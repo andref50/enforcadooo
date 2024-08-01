@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import schedule
 
 
 app = Flask(__name__)
@@ -14,17 +15,11 @@ data = {
         'dica': 'Esporte'
         }
 
-accepted = {
-    'status': 'OK'
-}
 
-
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods = ['GET'])
 def index(): 
     if request.method == 'GET':
         return jsonify(data)
-    if request.method == 'POST':
-        return jsonify(accepted)
 
 
 if __name__ == '__main__':
