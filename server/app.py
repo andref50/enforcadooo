@@ -17,9 +17,9 @@ def update_days():
 
 
 data = {
-        'palavra': 'JUDOCA',
-        'dica': 'Esporte',
-        'curDay': 0
+        'palavra': 'PALÍNDROMO',
+        'dica': 'Gramática',
+        'curDay': 3
         }
 
 schedule.every(10).seconds.do(update_days)
@@ -33,5 +33,6 @@ def index():
 
 if __name__ == '__main__':
     app.run()
+
     while True:
         schedule.run_pending();
