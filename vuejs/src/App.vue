@@ -82,8 +82,8 @@
         endGame('winner')
       }
     } else {
-      num_erros += 1;
       erros.push(kp)
+      num_erros += 1;
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
       image.item(0).src = bodyStates[num_erros];
