@@ -5,7 +5,7 @@
 
   
   function kbTrigger(t) {
-    const kp = t.target.className.split("_")[1];
+    const kp = t.target.className.split("_")[1].toUpperCase();
 
     if (kp != 'enter')  { t.target.classList = 'keyboard-disabled' } 
     else                { t.target.classList = 'keyboard-enter-disabled'}

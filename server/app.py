@@ -1,7 +1,7 @@
+import random
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import schedule
-import threading
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__)
@@ -10,19 +10,29 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+data = {'curDay': 0}
 
-def update_days():
+
+def update_word():
+    with open("WORDLIST", "r", encoding='utf-8') as f:
+        lines = f.readlines()
+
+    print()
+
+    selection = random.randint(0, len(lines) - 1)
+    print(lines[selection].split('\n')[0])
+
+    palavra = lines[selection].split(',')[0].strip()
+    dica = lines[selection].split(',')[1].split('\n')[0].strip()
+
+    data['word'] = palavra
+    data['tip'] = dica
     data['curDay'] += 1
-    print(data['curDay'])
 
 
-data = {
-        'palavra': 'JUDOCA',
-        'dica': 'Esporte',
-        'curDay': 0
-        }
-
-schedule.every(10).seconds.do(update_days)
+scheduler = BackgroundScheduler()
+scheduler.add_job(update_word, trigger='interval', seconds=60)
+scheduler.start()
 
 
 @app.route('/', methods = ['GET'])
@@ -33,5 +43,3 @@ def index():
 
 if __name__ == '__main__':
     app.run()
-    while True:
-        schedule.run_pending();

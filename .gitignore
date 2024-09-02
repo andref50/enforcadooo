@@ -29,5 +29,5 @@ coverage
 
 *.tsbuildinfo
 
-/server/env/*
+./server/env/*
 

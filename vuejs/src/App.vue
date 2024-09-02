@@ -19,40 +19,41 @@
 =======
   const server = import.meta.env.VITE_APP_API
 
-  const API_palavra = ref('')
-  const API_dica = ref('')
-  const API_curDay = ref(0)
   let palavra = ref('')
   let dica = ''
+  let curDay = ref(0)
   let palavraNormalize = ref('')
   let arrPalavra = ref('')
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> b7b46d43f758311003305bdfc40fae836096aa0b
 =======
   let curDay = ref(0)
 >>>>>>> f333dca388a4549fd30969a50bcf7d3b44518c6d
+=======
+  let acertos = []
+  let erros = []
+  let num_erros = 0;
+>>>>>>> dev
 
   onMounted(async () => {
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      API_palavra.value = dados['palavra'];
-      API_dica.value = dados['dica'];
-      API_curDay.value = dados['curDay']
+      palavra = dados['palavra'].toUpperCase();
+      dica = dados['dica'];
+      curDay = dados['curDay']
       } catch (error) {
       console.log('Error fecthing data.')
       }
 
-    palavra = API_palavra.value.toUpperCase();
-    dica = API_dica.value;
-    palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    arrPalavra = normalizeAcento(palavra.toUpperCase())
-    curDay = API_curDay.value;
-    console.log(curDay)
+    palavraNormalize = normalizeAcento(palavra);
+    arrPalavra = normalizeAcento(palavra)
 
     gameStart();
   });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const palavra = "PÊNDULO".toUpperCase();
 =======
@@ -66,6 +67,8 @@
 >>>>>>> b7b46d43f758311003305bdfc40fae836096aa0b
   let errors = 0;
 
+=======
+>>>>>>> dev
   // WINDOW MANAGER BOOL
   let isWindowOpen = false; 
 
@@ -78,65 +81,95 @@
         'vitorias'    :0,
         'derrotas'    :0,
         'curDay'      :0,
-        'last_status' :'init'
+        'game_status' :'init',
+        'last_erros'  :[],
+        'last_acertos':[]
       }
 
   if(localStorage.length){ 
       gameData = JSON.parse(localStorage.getItem('status'))
-      console.log(gameData)
     }
 
   getScoreboard();
 
   // ------- JOGO ------- //
   function mainFunction(kp){
-    kp = kp.toUpperCase();
-
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
+    const image = document.getElementsByClassName('corda');
 
-
-    //  ------------ CAPTURA ACERTOS --------------- //
-    let captureError = false;
-     arrSelectdiv.forEach((element, i) => { 
-       if(normalizeAcento(element.innerHTML) === kp) {
-            setTimeout(() => {
-            element.classList = 'letra-correct';
-            captureError = true;
-        }, i * 30)
-      } // SET TIMER LETTER REVEAL //
-    });
-    arrPalavra = arrPalavra.replaceAll(kp, '');
-    if (!arrPalavra) { 
-      endGame('winner');
-    }
-
-
-    //  ------------------ CAPTURA ERRO -------------------- //
-    if(!palavraNormalize.includes(kp)){
+    if(palavraNormalize.includes(kp)){
+      acertos.push(kp)
+      arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === kp)
+                  .map((e, i) => { 
+                    setTimeout(() => {
+                      e.classList = 'letra-correct'
+                    }, 100 * i)
+                  })
+      if(arrSelectdiv.length - 1 == 0) {
+        endGame('winner')
+      }
+    } else {
+      erros.push(kp)
+      num_erros += 1;
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
-
-      errors += 1;
-
-      const image = document.getElementsByClassName('corda');
-      image.item(0).src = bodyStates[errors];
-
-      if(errors == 6) {
-        arrSelectdiv.forEach((element, i) => { 
-          setTimeout(() => {
-            element.classList = 'letra-incorrect' }, i * 100);
-          });
-          endGame('gameover');
+      image.item(0).src = bodyStates[num_erros];
+      if(num_erros == 6) {
+        endGame('gameover')
       }
     }
   }
 
   function gameStart(){
-    if (gameData['last_status'] == 'init'){
+    updateDica();
+    criaJogo();
+
+    if (gameData['game_status'] == 'init'){
       janelaAjuda();
     }
-    criaJogo();
+
+    if(gameData['curDay'] == curDay) {
+      disableKeyboard();
+      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
+      if(gameData['game_status'] == 'lost'){
+        janelaLose();
+      } else {
+        janelaWin();
+      }
+    }
+  }
+
+  function retriveLastGame(la, le){
+    const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
+    const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
+    const image = document.getElementsByClassName('corda');
+
+    
+    arrSelectdiv
+                .filter(e => la.includes(normalizeAcento(e.innerHTML)))
+                .map((e, i) => { 
+                  setTimeout(() => {
+                    e.classList = 'letra-correct'
+                  }, 50 * i)
+                })
+    arrSelectdiv
+                .filter(e => !la.includes(normalizeAcento(e.innerHTML)))
+                .map((e, i) => { 
+                  setTimeout(() => {
+                    e.classList = 'letra-not-guessed'
+                  }, 50 * i)
+                })
+
+    arrBancoDiv
+              .slice(0, le.length)
+              .map((e, i) => {
+                setTimeout(() => {
+                  e.innerHTML = le[i]
+                  e.classList = 'banco-erro';       
+                }, 50 * i)
+              })
+    image.item(0).src = bodyStates[le.length];
   }
 
   function criaJogo() {
@@ -144,7 +177,7 @@
     for(let c in palavra){
       var p = document.createElement('p1');
       p.classList.add('letra-hidden');
-      p.innerText = palavra[c].toUpperCase();
+      p.innerText = palavra[c];
       if(palavra[c] === " "){
         p.classList.add('opacity-0', 'blank')
       }
@@ -170,27 +203,47 @@
     } else {
       totalDerrotas += 1;
       gameResult = 'lost'
+
     }
     
-    updateCookie(totalVitorias, totalDerrotas, gameResult, curDay);
+    updateCookie(totalVitorias, totalDerrotas, gameResult, curDay, acertos, erros);
     setTimeout(() => {
       popupoverlay('60%')
       document.getElementsByClassName(event).item(0).style.opacity = '100%'
       document.getElementsByClassName(event).item(0).style.visibility = "visible";
-
       document.getElementById('total-win-text').innerHTML = totalVitorias;
       document.getElementById('total-lose-text').innerHTML = totalDerrotas;
     }, 500)
   }
 
+
   function janelaDica(){
-    updateDica();
     if(!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
       const dicaWindow = document.getElementsByClassName('dica');
       dicaWindow.item(0).style.opacity = '100%';
       dicaWindow.item(0).style.visibility = "visible";
+    }
+  }
+
+  function janelaWin(){
+    if(!isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const winWindow = document.getElementsByClassName('winner');
+      winWindow.item(0).style.opacity = '100%';
+      winWindow.item(0).style.visibility = "visible";
+    }
+  }
+
+  function janelaLose(){
+    if(!isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const loseWindow = document.getElementsByClassName('gameover');
+      loseWindow.item(0).style.opacity = '100%';
+      loseWindow.item(0).style.visibility = "visible";
     }
   }
 
@@ -233,12 +286,15 @@
     totalDerrotas = gameData['derrotas'];
   }
 
-  function updateCookie (vitoria, derrota, result, curDay){
+  function updateCookie (vitoria, derrota, result, curDay, last_acertos, last_erros){
       gameData['vitorias']    = vitoria;
       gameData['derrotas']    = derrota;
-      gameData['last_status'] = result;
+      gameData['game_status'] = result;
       gameData['curDay']      = curDay;
+      gameData['last_acertos'] = last_acertos;
+      gameData['last_erros']  = last_erros;
       localStorage.setItem('status', JSON.stringify(gameData))
+      console.log(gameData)
   }
 
   function updateDica(){
