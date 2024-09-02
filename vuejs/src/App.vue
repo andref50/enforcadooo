@@ -18,13 +18,19 @@
   const server = import.meta.env.VITE_APP_ROOT_API
 =======
   const server = import.meta.env.VITE_APP_API
+
   const API_palavra = ref('')
   const API_dica = ref('')
+  const API_curDay = ref(0)
   let palavra = ref('')
   let dica = ''
   let palavraNormalize = ref('')
   let arrPalavra = ref('')
+<<<<<<< HEAD
 >>>>>>> b7b46d43f758311003305bdfc40fae836096aa0b
+=======
+  let curDay = ref(0)
+>>>>>>> f333dca388a4549fd30969a50bcf7d3b44518c6d
 
   onMounted(async () => {
     try {
@@ -32,7 +38,7 @@
       const dados = await response.json();
       API_palavra.value = dados['palavra'];
       API_dica.value = dados['dica'];
-      console.log(dados)
+      API_curDay.value = dados['curDay']
       } catch (error) {
       console.log('Error fecthing data.')
       }
@@ -41,6 +47,8 @@
     dica = API_dica.value;
     palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     arrPalavra = normalizeAcento(palavra.toUpperCase())
+    curDay = API_curDay.value;
+    console.log(curDay)
 
     gameStart();
   });
@@ -62,19 +70,23 @@
   let isWindowOpen = false; 
 
   const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
-  let atualState = bodyStates[0];
 
   var totalVitorias = 0;
   var totalDerrotas = 0;
 
-  let firstPlay = false;
+  let gameData = {
+        'vitorias'    :0,
+        'derrotas'    :0,
+        'curDay'      :0,
+        'last_status' :'init'
+      }
 
-  if(!checkCookie()){ 
-      setCookie();
-      firstPlay = true;
+  if(localStorage.length){ 
+      gameData = JSON.parse(localStorage.getItem('status'))
+      console.log(gameData)
     }
-  getCookie();
 
+  getScoreboard();
 
   // ------- JOGO ------- //
   function mainFunction(kp){
@@ -95,7 +107,9 @@
       } // SET TIMER LETTER REVEAL //
     });
     arrPalavra = arrPalavra.replaceAll(kp, '');
-    if (!arrPalavra) { gameWin() }
+    if (!arrPalavra) { 
+      endGame('winner');
+    }
 
 
     //  ------------------ CAPTURA ERRO -------------------- //
@@ -105,18 +119,24 @@
 
       errors += 1;
 
-      atualState = bodyStates[errors];
       const image = document.getElementsByClassName('corda');
-      image.item(0).src = atualState;
+      image.item(0).src = bodyStates[errors];
 
       if(errors == 6) {
         arrSelectdiv.forEach((element, i) => { 
           setTimeout(() => {
             element.classList = 'letra-incorrect' }, i * 100);
           });
-          gameOver();
+          endGame('gameover');
       }
     }
+  }
+
+  function gameStart(){
+    if (gameData['last_status'] == 'init'){
+      janelaAjuda();
+    }
+    criaJogo();
   }
 
   function criaJogo() {
@@ -139,33 +159,29 @@
     })
   }
 
-  function gameWin(){
+  function endGame(event){
+    let gameResult;
     isWindowOpen = true
     disableKeyboard();
-    setTimeout(() => {
-      popupoverlay('60%')
-      const winnerWindow = document.getElementsByClassName('winner');
-      winnerWindow.item(0).style.opacity = '100%'
-      winnerWindow.item(0).style.visibility = "visible";
-    }, 1500)
-    totalVitorias += 1;
-    updateCookie(totalVitorias, totalDerrotas);
-    document.getElementById('total-win-text').innerHTML = totalVitorias;
-  }
 
-  function gameOver() {
-    isWindowOpen = true
-    disableKeyboard();
+    if(event === 'winner'){
+      totalVitorias += 1;
+      gameResult = 'win'
+    } else {
+      totalDerrotas += 1;
+      gameResult = 'lost'
+    }
+    
+    updateCookie(totalVitorias, totalDerrotas, gameResult, curDay);
     setTimeout(() => {
       popupoverlay('60%')
-      const gameoverWindow = document.getElementsByClassName('gameover');
-      gameoverWindow.item(0).style.opacity = '100%';
-      gameoverWindow.item(0).style.visibility = "visible";
-    }, 1500)
-    totalDerrotas += 1;
-    updateCookie(totalVitorias, totalDerrotas);
-    document.getElementById('total-lose-text').innerHTML = totalDerrotas;
-    }
+      document.getElementsByClassName(event).item(0).style.opacity = '100%'
+      document.getElementsByClassName(event).item(0).style.visibility = "visible";
+
+      document.getElementById('total-win-text').innerHTML = totalVitorias;
+      document.getElementById('total-lose-text').innerHTML = totalDerrotas;
+    }, 500)
+  }
 
   function janelaDica(){
     updateDica();
@@ -190,7 +206,7 @@
   }
 
   function janelaStats(){
-    getCookie();
+    getScoreboard();
     if(!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
@@ -212,45 +228,17 @@
     popup_overlay.item(0).style.opacity = po;
   }
 
-  function checkCookie(){
-    if(document.cookie.split(';').some((item) => item.trim().startsWith('vitorias='))){
-      return 1;
-    }
-    return 0;
+  function getScoreboard(){
+    totalVitorias = gameData['vitorias'];
+    totalDerrotas = gameData['derrotas'];
   }
 
-  function getCookie(){
-    const readCookie = document.cookie;
-    let eachElement = readCookie.split(';').map((e) => e.trim());
-
-    const element1 = Number(eachElement[0].split('=')[1])
-    const element2 = Number(eachElement[1].split('=')[1])
-
-    if(eachElement[0].includes('vitorias=')){
-      totalVitorias = element1;
-      totalDerrotas = element2;
-    } else {
-      totalVitorias = element2;
-      totalDerrotas = element1;
-    }
-  }
-
-  function updateCookie (vitoria, derrota){
-      document.cookie = 'vitorias=' + vitoria;
-      document.cookie = 'derrotas=' + derrota;
-  }
-
-  function setCookie(){
-    document.cookie = 'vitorias=0';
-    document.cookie = 'derrotas=0';
-  }
-
-  function gameStart(){
-    if (firstPlay){
-      janelaAjuda();
-    }
-    criaJogo();
-    firstPlay = false;
+  function updateCookie (vitoria, derrota, result, curDay){
+      gameData['vitorias']    = vitoria;
+      gameData['derrotas']    = derrota;
+      gameData['last_status'] = result;
+      gameData['curDay']      = curDay;
+      localStorage.setItem('status', JSON.stringify(gameData))
   }
 
   function updateDica(){
