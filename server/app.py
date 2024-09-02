@@ -17,10 +17,7 @@ def update_word():
     with open("WORDLIST", "r", encoding='utf-8') as f:
         lines = f.readlines()
 
-    print()
-
     selection = random.randint(0, len(lines) - 1)
-    print(lines[selection].split('\n')[0])
 
     palavra = lines[selection].split(',')[0].strip()
     dica = lines[selection].split(',')[1].split('\n')[0].strip()
