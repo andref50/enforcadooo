@@ -13,10 +13,6 @@
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const server = import.meta.env.VITE_APP_ROOT_API
-=======
   const server = import.meta.env.VITE_APP_API
 
   let palavra = ref('')
@@ -24,17 +20,9 @@
   let curDay = ref(0)
   let palavraNormalize = ref('')
   let arrPalavra = ref('')
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b7b46d43f758311003305bdfc40fae836096aa0b
-=======
-  let curDay = ref(0)
->>>>>>> f333dca388a4549fd30969a50bcf7d3b44518c6d
-=======
   let acertos = []
   let erros = []
   let num_erros = 0;
->>>>>>> dev
 
   onMounted(async () => {
     try {
@@ -53,22 +41,6 @@
     gameStart();
   });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const palavra = "PÊNDULO".toUpperCase();
-=======
-  const palavra = "ÓTIMO".toUpperCase();
->>>>>>> parent of ae973fb (teste git pull)
-  const palavraNormalize = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-  let arrPalavra = normalizeAcento(palavra.toUpperCase())
-  const dica = "Balança";
-
-=======
->>>>>>> b7b46d43f758311003305bdfc40fae836096aa0b
-  let errors = 0;
-
-=======
->>>>>>> dev
   // WINDOW MANAGER BOOL
   let isWindowOpen = false; 
 
