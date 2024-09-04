@@ -12,14 +12,13 @@
 
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
-
+  
   const server = import.meta.env.VITE_APP_API
 
   let palavra = ref('')
   let dica = ''
   let curDay = ref(0)
   let palavraNormalize = ref('')
-  let arrPalavra = ref('')
   let acertos = []
   let erros = []
   let num_erros = 0;
@@ -28,15 +27,16 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
+      console.log(dados)
       palavra = dados['palavra'].toUpperCase();
       dica = dados['dica'];
       curDay = dados['curDay']
+
       } catch (error) {
       console.log('Error fecthing data.')
       }
 
     palavraNormalize = normalizeAcento(palavra);
-    arrPalavra = normalizeAcento(palavra)
 
     gameStart();
   });
@@ -407,8 +407,10 @@
 
     </div>
 
-      <!-- TECLADO -->
-      <Teclado @keyPressed="mainFunction"/>
+      <div class="teclado-componente">
+        <!-- TECLADO -->
+        <Teclado @keyPressed="mainFunction"/>
+      </div>
 
   </div>
 </template>

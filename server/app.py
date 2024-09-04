@@ -10,7 +10,11 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-data = {'curDay': 0}
+data = {
+    'curDay': 0,
+    'dica': 'Status',
+    'palavra': 'Inicial'
+    }
 
 
 def update_word():
@@ -22,13 +26,13 @@ def update_word():
     palavra = lines[selection].split(',')[0].strip()
     dica = lines[selection].split(',')[1].split('\n')[0].strip()
 
-    data['word'] = palavra
-    data['tip'] = dica
+    data['palavra'] = palavra
+    data['dica'] = dica
     data['curDay'] += 1
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, trigger='interval', seconds=60)
+scheduler.add_job(update_word, trigger='cron', hour=0)
 scheduler.start()
 
 

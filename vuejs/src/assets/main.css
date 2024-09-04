@@ -317,7 +317,6 @@ div.keyboard-div {
     width: 100vw;
     flex-direction: column;
     margin-bottom: 1rem;
-    /* margin-top: auto; */
     padding: 1rem;
  }
 
@@ -343,6 +342,7 @@ div.kb_linha3 {
     margin-left: 15%;
     margin-right: 15%;
 }
+
 
 div.tentativas {
     display: flex;
@@ -443,14 +443,5 @@ p1.blank {
 p1.letra-hidden {
     color: transparent;
     user-select: none;
-}
-
-.line {
-    display: flex;
-    flex: 1;
-    height: 0.05rem;
-    background: white;
-    margin-left: 16px;
-    margin-right: 16px
 }
 
