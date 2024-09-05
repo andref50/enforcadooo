@@ -32,7 +32,7 @@ def update_word():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, 'cron', hour=7, minute=20)
+scheduler.add_job(update_word, 'cron', hour=13, minute=22)
 scheduler.start()
 
 
