@@ -10,6 +10,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+
 data = {
     'curDay': 0,
     'dica': 'Status',
@@ -32,7 +33,7 @@ def update_word():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, 'cron', hour=13, minute=22)
+scheduler.add_job(update_word, 'cron', hour=13, minute=31)
 scheduler.start()
 
 
