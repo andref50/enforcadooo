@@ -319,7 +319,7 @@
           <p class="title">Dica: 👀</p>
         </div>
         <div class="janela-body-dica">
-          <button class="dica-text-body" id="dica-text-body"> {{ dica }} </button>
+          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
         </div>
       </div>
 
@@ -405,12 +405,14 @@
       <!----------->
       <div class="letras-div">  </div>
 
-    </div>
-
+      <!-- TECLADO -->
       <div class="teclado-componente">
-        <!-- TECLADO -->
         <Teclado @keyPressed="mainFunction"/>
       </div>
+
+    </div> <!--SECAO PRINCIPAL-->
+
+
 
   </div>
 </template>

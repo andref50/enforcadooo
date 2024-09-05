@@ -7,6 +7,11 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
 
 html {
     margin: 0;
@@ -40,7 +45,7 @@ div.container {
 
 p {
     font-family: Rubik;
-    font-weight: bold;
+    font-weight: 400;
 }
 
 div.topo {
@@ -75,7 +80,7 @@ div.topo-subdiv {
                 /* For mobile phones: */
                 [class*="topo-subdiv"] {
                 width: 100vw;
-                max-width: 800px;
+                max-width: 600px;
                 }
             }
 
@@ -91,6 +96,7 @@ h1.logo {
 div.secao-principal {
     display: flex;
     width: 100vw;
+    height: 85vh;
     flex-direction: column;
     align-items: center;
     align-content: space-betweeen;
@@ -100,7 +106,7 @@ div.secao-principal {
 div.corda-container {
     display: flex;
     flex: 1;
-    align-items:  start;
+    align-items: start;
     justify-content: center;
     object-position: right top;
 }
@@ -146,7 +152,7 @@ div.janela {
 
 
 div.dica {
-    height: 210px;
+    height: 200px;
 }
 
 div.stats {
@@ -177,8 +183,20 @@ div.janela-body {
 }
 
 div.janela-body-dica {
+    display: flex;
+    flex: 1;
+    justify-content: start;
     font-size: 17px;
     font-weight: 200;
+}
+
+p.dica-text-body {
+    font-size: 20px;
+    color: white;
+    background: transparent;
+    margin-top: 12px;
+    width: 15vw;
+    pointer-events: none;
 }
 
 div.gameover {
@@ -198,7 +216,7 @@ div.winner {
 p.title, p.title-stats{     
     font-family: Bebas Neue;
     font-weight: 400;
-    font-size: 50px;
+    font-size: 45px;
     text-shadow: -3px 3px rgba(0,0,0,0.3);
 }
 
@@ -207,13 +225,14 @@ p.title-stats{
 }
 
 p.placar-label {
+    margin-top: 10px;
     font-size: 16px;
 }
 
             @media only screen and (min-width: 1200px){ 
                 /* For big screen */
                 p.placar-label{
-                    font-size: 20px;
+                    font-size: 16px;
                 }
             }
 
@@ -223,21 +242,15 @@ p.ajuda-buttons-label {
     margin-left: 2vw;
 }
 
-p.dica-text-body {
-    word-wrap: break-word;
-    padding-top: 20px;
-}
-
-
 button {
     background: #C8ACD6;
     color: #17153B;
     font-weight: bold;
-    margin: 0.2rem;
+    margin: 0.15rem;
     padding: 8px;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
+    border-radius: 4px;
     transition: 0.1s;
  }
 
@@ -284,10 +297,9 @@ button.keyboard, button.keyboard-disabled, button.keyboard-enter, button.placar 
     display: flex;
     flex: 1;
     font-size: 1.3rem;
-    width: 2%;
-    aspect-ratio: 1/1.5;
-    max-width: 60px;
-    max-height: 80px;
+    aspect-ratio: 1/1.7;
+    max-width: 40px;
+    max-height: 60px;
     padding: 1%;
 }
 
@@ -299,18 +311,12 @@ button.keyboard-disabled {
 
 button.placar {
     font-size: 38px;
-    padding: 20px;
+    padding: 30px;
     width: 15vw;
     pointer-events: none
 }
-button.dica-text-body {
-    font-size: 20px;
-    color: white;
-    background: transparent;
-    padding: 8px;
-    width: 15vw;
-    pointer-events: none;
-}
+
+
 
 div.keyboard-div {
     display: flex;
@@ -320,7 +326,7 @@ div.keyboard-div {
     padding: 1rem;
  }
 
-            @media only screen {
+            @media only screen and (min-width: 1200px) {
                 /* For mobile phones: */
                 [class*="keyboard-div"] {
                 width: 100%;
@@ -372,7 +378,7 @@ div.banco, div.banco-erro {
     max-height: 50px;
     margin: 2px;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 4px;
     transform: rotateY(180deg);
     transition: 0.3s;
     z-index: -1;
@@ -409,7 +415,7 @@ p1.letra-input, p1.letra-correct, p1.letra-incorrect, p1.letra-hidden, p1.letra-
     aspect-ratio: 1/1.2;
     max-width: 50px; 
     background: #AB74BB;
-    border-radius: 8px;
+    border-radius: 4px;
     transform: rotateY(180deg);
     transition: 0.3s;
 
@@ -445,3 +451,7 @@ p1.letra-hidden {
     user-select: none;
 }
 
+
+div.teclado-componente {
+    display: flex;
+}
