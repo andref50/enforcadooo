@@ -1,35 +1,42 @@
+import os
+import sqlite3
 from flask import Flask, jsonify, request
-from flask_cors import CORS
-from apscheduler.schedulers.background import BackgroundScheduler
 
+# app = Flask(__name__)
 
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# data = {
+#         'palavra': 'PALÍNDROMO',
+#         'dica': 'Gramática',
+#         'curDay': 3
+#         }
 
-CORS(app, resources={r'/*': {'origins': '*'}})
+# @app.route('/', methods = ['GET'])
+# def index(): 
+#     if request.method == 'GET':
+#         return jsonify(data)
 
+path = os.path.dirname(os.path.abspath(__file__))
+db = os.path.join(path, 'database/wordlist_db')
 
-def update_days():
-    print('oi')
-
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(update_days, trigger='cron', hour=12, minute=6)
-scheduler.start()
-
+conn = sqlite3.connect(db)
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM WORDLIST WHERE used=False ORDER BY RANDOM() LIMIT 1;")
+select = cursor.fetchall()
 
 data = {
-        'palavra': 'PALÍNDROMO',
-        'dica': 'Gramática',
+        'palavra': select[0][1],
+        'dica': select[0][2],
         'curDay': 3
         }
 
-@app.route('/', methods = ['GET'])
-def index(): 
-    if request.method == 'GET':
-        return jsonify(data)
+print(select[0])
+print(data)
 
+cursor.execute(f"UPDATE WORDLIST SET used=True WHERE ID={select[0][0]}")
+cursor.execute(f"UPDATE WORDLIST SET ativa=True WHERE ID={select[0][0]}")
+conn.commit()
 
-if __name__ == '__main__':
-    app.run()
+conn.close()
+
+# if __name__ == '__main__':
+    # app.run()
