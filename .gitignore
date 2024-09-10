@@ -29,6 +29,5 @@ coverage
 
 *.tsbuildinfo
 
-./server/env/*
-
-server/venv/bin/udo q?q
+/server/env/
+/server/venv/
