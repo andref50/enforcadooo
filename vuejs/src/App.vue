@@ -80,6 +80,7 @@
                   })
       if(arrSelectdiv.length - 1 == 0) {
         endGame('winner')
+        showJanelaEndGame('winner')
       }
     } else {
       erros.push(kp)
@@ -89,6 +90,7 @@
       image.item(0).src = bodyStates[num_erros];
       if(num_erros == 6) {
         endGame('gameover')
+        showJanelaEndGame('gameover')
       }
     }
   }
@@ -105,9 +107,9 @@
       disableKeyboard();
       retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
       if(gameData['game_status'] == 'lost'){
-        janelaLose();
+        showJanelaEndGame('gameover')
       } else {
-        janelaWin();
+        showJanelaEndGame('winner')
       }
     }
   }
@@ -166,7 +168,6 @@
 
   function endGame(event){
     let gameResult;
-    isWindowOpen = true
     disableKeyboard();
 
     if(event === 'winner'){
@@ -175,17 +176,29 @@
     } else {
       totalDerrotas += 1;
       gameResult = 'lost'
-
     }
-    
-    updateCookie(totalVitorias, totalDerrotas, gameResult, curDay, acertos, erros);
+
+    gameData['vitorias']    = totalVitorias;
+    gameData['derrotas']    = totalDerrotas;
+    gameData['game_status'] = gameResult;
+    gameData['curDay']      = curDay;
+    gameData['last_acertos'] = acertos;
+    gameData['last_erros']  = erros;
+    localStorage.setItem('status', JSON.stringify(gameData))
+  }
+
+  function showJanelaEndGame(event){
     setTimeout(() => {
-      popupoverlay('60%')
       document.getElementsByClassName(event).item(0).style.opacity = '100%'
       document.getElementsByClassName(event).item(0).style.visibility = "visible";
       document.getElementById('total-win-text').innerHTML = totalVitorias;
       document.getElementById('total-lose-text').innerHTML = totalDerrotas;
     }, 500)
+
+    setTimeout(() => {
+      janelaStats();
+    }, 550)
+
   }
 
 
@@ -196,26 +209,6 @@
       const dicaWindow = document.getElementsByClassName('dica');
       dicaWindow.item(0).style.opacity = '100%';
       dicaWindow.item(0).style.visibility = "visible";
-    }
-  }
-
-  function janelaWin(){
-    if(!isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%')
-      const winWindow = document.getElementsByClassName('winner');
-      winWindow.item(0).style.opacity = '100%';
-      winWindow.item(0).style.visibility = "visible";
-    }
-  }
-
-  function janelaLose(){
-    if(!isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%')
-      const loseWindow = document.getElementsByClassName('gameover');
-      loseWindow.item(0).style.opacity = '100%';
-      loseWindow.item(0).style.visibility = "visible";
     }
   }
 
@@ -258,17 +251,6 @@
     totalDerrotas = gameData['derrotas'];
   }
 
-  function updateCookie (vitoria, derrota, result, curDay, last_acertos, last_erros){
-      gameData['vitorias']    = vitoria;
-      gameData['derrotas']    = derrota;
-      gameData['game_status'] = result;
-      gameData['curDay']      = curDay;
-      gameData['last_acertos'] = last_acertos;
-      gameData['last_erros']  = last_erros;
-      localStorage.setItem('status', JSON.stringify(gameData))
-      console.log(gameData)
-  }
-
   function updateDica(){
     document.getElementById('dica-text-body').innerHTML = dica;
   }
@@ -290,25 +272,17 @@
 
       <!-- GAME OVER -->
       <div class="janela gameover">
-        <button @click="closeWindow" class="close-button btn-gameover"> x </button>
+        <!-- <button @click="closeWindow" class="close-button btn-gameover"> x </button> -->
         <div class="janela-title">
-          <p class="title">Game over :(</p>
-        </div>
-        <div class="janela-body">
-          <p>Não desanima!</p>
-          <p>Amanhã tem mais ;)</p>
+          <p class="title title-winner-lose">Game over :(</p>
         </div>
       </div>
 
       <!-- WINNER -->
       <div class="janela winner">
-        <button @click="closeWindow" class="close-button btn-winner"> x </button>
+        <!-- <button @click="closeWindow" class="close-button btn-winner"> x </button> -->
         <div class="janela-title">
-          <p class="title">Parabéns :)</p>
-        </div>
-        <div class="janela-body">
-          <p>Você adivinhou a</p>
-          <p>palavra de hoje :)</p>
+          <p class="title title-winner-lose">Parabéns :)</p>
         </div>
       </div>
 
@@ -327,7 +301,8 @@
       <div class="janela stats">
         <button @click="closeWindow" class="close-button"> x </button>
         <div class="janela-title">
-          <p class="title-stats">Sua evolução</p>
+          <p class="title-stats">Sua evolução:</p>
+          <br>
         </div>
         <div class="janela-body">
           <div class="flex flex-row flex-1 justify-center">

@@ -136,40 +136,60 @@ div.popup-overlay {
 
 div.janela {
     position: absolute;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     top: 12vh;
     z-index: 1;
-    flex-direction: column;
     background: #433D8B;
-    padding: 30px;
+    padding: 24px;
     border-radius: 8px;
     opacity: 0%;
     visibility: hidden;
     transition: 0.2s;
     width: 320px;
-    height: 300px;
-    box-shadow: 0px 0px 80px rgba(1, 11, 25, 0.6);
-}
-
-
-div.dica {
-    height: 200px;
+    /* box-shadow: 0px 0px 80px rgba(1, 11, 25, 0.6); */
 }
 
 div.stats {
-    height: 260px;
+    top: 20vh;
+}
+
+div.dica {
+    padding-bottom: 30px;
 }
 
 div.ajuda {
-    height: 520px;
+    padding-bottom: 30px;
 }
 
             @media only screen and (min-width: 768px){
                 /* For mobile phones: */
                 div.ajuda {
                 width: 400px;
-                height: 480px;
                 }
             }
+
+
+div.gameover {
+    display: flex;
+    flex: 1;
+    z-index: 0;
+    padding: 12px 0px 0px 20px;
+    background: #732C4D;
+    transition: 0.1s;
+    box-shadow: 0px 0px 100px rgba(0,0,0,0.5);
+}
+
+div.winner {
+    display: flex;
+    flex: 1;
+    z-index: 0;
+    padding: 12px 0px 0px 20px;
+    background: #2C967C;
+    transition: 0.1s;
+    box-shadow: 0px 0px 100px rgba(0,0,0,0.5);
+}
 
 div.janela-title {
     font-family: Bebas;
@@ -199,20 +219,6 @@ p.dica-text-body {
     pointer-events: none;
 }
 
-div.gameover {
-    height: 260px;
-    padding-top: 60px;
-    background: #732C4D;
-    transition: 0.1s;
-}
-
-div.winner {
-    height: 260px;
-    padding-top: 60px;
-    background: #2C967C;
-    transition: 0.1s;
-}
-
 p.title, p.title-stats{     
     font-family: Bebas Neue;
     font-weight: 400;
@@ -221,7 +227,11 @@ p.title, p.title-stats{
 }
 
 p.title-stats{
-    text-align: center;
+    text-align: left;
+}
+
+p.title-winner-lose {
+    font-size: 30px;
 }
 
 p.placar-label {
@@ -262,7 +272,7 @@ button.close-button{
     width: 40px;
     height: 40px;
     top: -2px;
-    right: -3px;
+    right: -2px;
     background: #C8ACD6;
     color: #17153B;
     font-weight: 800;
