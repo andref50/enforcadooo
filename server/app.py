@@ -51,7 +51,7 @@ def update_word():
         cursor.execute("SELECT * FROM usedCount")
         usedCount_query = cursor.fetchone()
         cursor.execute(f"SELECT * FROM WORDLIST WHERE used={usedCount_query[0]} ORDER BY RANDOM() LIMIT 1")
-        word_query = cursor.fetchall()
+        word_query = cursor.fetchone()
 
     cursor.execute("SELECT * FROM curDay")
     curDay_query = cursor.fetchone()
@@ -67,14 +67,33 @@ def update_word():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, 'interval', hours=1)
+scheduler.add_job(update_word, 'interval', seconds=10)
 scheduler.start()
 
 
-@app.route('/', methods = ['GET'])
+@app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
         return jsonify(data)
+    
+    if request.method == 'POST':
+        path = os.path.dirname(os.path.abspath(__file__))
+        db = os.path.join(path, 'database/wordlist_db')
+        conn = sqlite3.connect(db)
+        cursor = conn.cursor()
+
+        asd = request.json
+
+        if(asd['status'] == 'winner'):
+            cursor.execute(f"UPDATE WORDLIST SET acertos=acertos+1 WHERE ativa=True;")
+
+        elif(asd['status'] == 'lost'):
+            cursor.execute(f"UPDATE WORDLIST SET erros=erros+1 WHERE ativa=True;")
+
+        conn.commit()
+        conn.close()
+
+        return jsonify(asd)
 
 
 if __name__ == '__main__':

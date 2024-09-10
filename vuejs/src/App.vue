@@ -27,7 +27,7 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      console.log(dados)
+      // console.log(dados)
       palavra = dados['palavra'].toUpperCase();
       dica = dados['dica'];
       curDay = dados['curDay']
@@ -57,6 +57,8 @@
         'last_erros'  :[],
         'last_acertos':[]
       }
+
+  let finalGamePOSTRequest = { 'status': '' }
 
   if(localStorage.length){ 
       gameData = JSON.parse(localStorage.getItem('status'))
@@ -166,16 +168,18 @@
     })
   }
 
-  function endGame(event){
+  async function endGame(event){
     let gameResult;
     disableKeyboard();
 
     if(event === 'winner'){
       totalVitorias += 1;
       gameResult = 'win'
+      finalGamePOSTRequest['status'] = 'winner'
     } else {
       totalDerrotas += 1;
       gameResult = 'lost'
+      finalGamePOSTRequest['status'] = 'lost'
     }
 
     gameData['vitorias']    = totalVitorias;
@@ -185,7 +189,22 @@
     gameData['last_acertos'] = acertos;
     gameData['last_erros']  = erros;
     localStorage.setItem('status', JSON.stringify(gameData))
-  }
+
+    try {
+      const response = await fetch(server, 
+                                  {method: 'POST',
+                                  headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                          },
+                                  body: JSON.stringify(finalGamePOSTRequest)});
+      const statusCheck = await response.json();
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+  
 
   function showJanelaEndGame(event){
     setTimeout(() => {
