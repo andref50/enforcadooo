@@ -37,8 +37,10 @@
       }
 
     palavraNormalize = normalizeAcento(palavra);
-
-    gameStart();
+    
+    updateDica();
+    criaJogo();
+    initStatus();
   });
 
   // WINDOW MANAGER BOOL
@@ -80,39 +82,29 @@
                       e.classList = 'letra-correct'
                     }, 100 * i)
                   })
-      if(arrSelectdiv.length - 1 == 0) {
-        endGame('winner')
-        showJanelaEndGame('winner')
-      }
     } else {
       erros.push(kp)
       num_erros += 1;
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
       image.item(0).src = bodyStates[num_erros];
-      if(num_erros == 6) {
-        endGame('gameover')
-        showJanelaEndGame('gameover')
-      }
-    }
-  }
-
-  function gameStart(){
-    updateDica();
-    criaJogo();
-
-    if (gameData['game_status'] == 'init'){
-      janelaAjuda();
     }
 
-    if(gameData['curDay'] == curDay) {
-      disableKeyboard();
-      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
-      if(gameData['game_status'] == 'lost'){
-        showJanelaEndGame('gameover')
-      } else {
+    // CHECK IF WIN
+    if(arrSelectdiv.length - 1 == 0) {
+        endGame('winner')
         showJanelaEndGame('winner')
       }
+
+    // CHECK IF LOSE
+    if(num_erros == 6) {
+      endGame('gameover')
+      showJanelaEndGame('gameover')
+      arrSelectdiv.map((e, i) => { 
+                    setTimeout(() => {
+                      e.classList = 'letra-incorrect'
+                    }, 100 * i)
+                  })
     }
   }
 
@@ -148,6 +140,21 @@
     image.item(0).src = bodyStates[le.length];
   }
 
+  function initStatus(){
+    if (gameData['game_status'] == 'init'){
+      janelaAjuda();
+    }
+    else if(gameData['curDay'] == curDay) {
+
+      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
+      if(gameData['game_status'] == 'lost'){
+        showJanelaEndGame('gameover')
+      } else {
+        showJanelaEndGame('winner')
+      }
+    }
+  }
+
   function criaJogo() {
     var div = document.getElementsByClassName("letras-div").item(0); 
     for(let c in palavra){
@@ -161,16 +168,8 @@
     }
   }
 
-  function disableKeyboard(){
-  const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
-  arrButtons.forEach(element => {
-    element.classList = 'keyboard-disabled'
-    })
-  }
-
   async function endGame(event){
     let gameResult;
-    disableKeyboard();
 
     if(event === 'winner'){
       totalVitorias += 1;
@@ -199,6 +198,7 @@
                                           },
                                   body: JSON.stringify(finalGamePOSTRequest)});
       const statusCheck = await response.json();
+      // console.log(statusCheck)
       }
       catch(error){
         console.log(error)
@@ -207,6 +207,7 @@
   
 
   function showJanelaEndGame(event){
+    disableKeyboard();
     setTimeout(() => {
       document.getElementsByClassName(event).item(0).style.opacity = '100%'
       document.getElementsByClassName(event).item(0).style.visibility = "visible";
@@ -218,6 +219,13 @@
       janelaStats();
     }, 550)
 
+  }
+
+  function disableKeyboard(){
+  const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
+  arrButtons.forEach(element => {
+    element.classList = 'keyboard-disabled'
+    })
   }
 
 
@@ -238,7 +246,6 @@
       const ajudawindow = document.getElementsByClassName('ajuda');
       ajudawindow.item(0).style.opacity = '100%';
       ajudawindow.item(0).style.visibility = "visible";
-
     }
   }
 
@@ -279,8 +286,7 @@
 
   <!-- CONTAINER -->
   <div class="container">
-    <div class="popup-overlay"></div>
-
+    
     <!-- TOPO -->
     <Topo @janelaDicaEvent="janelaDica"
           @janelaAjudaEvent="janelaAjuda"
@@ -288,6 +294,9 @@
 
     <!-- PRINCIPAL -->
     <div class="secao-principal">
+
+      <div class="popup-overlay"></div>
+
 
       <!-- GAME OVER -->
       <div class="janela gameover">
@@ -302,17 +311,6 @@
         <!-- <button @click="closeWindow" class="close-button btn-winner"> x </button> -->
         <div class="janela-title">
           <p class="title title-winner-lose">Parabéns :)</p>
-        </div>
-      </div>
-
-      <!-- DICA -->
-      <div class="janela dica">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title">Dica: 👀</p>
-        </div>
-        <div class="janela-body-dica">
-          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
         </div>
       </div>
 
@@ -336,7 +334,21 @@
             </div>
           </div>
         </div>
+    
       </div>
+
+      <!-- DICA -->
+      <div class="janela dica">
+        <button @click="closeWindow" class="close-button"> x </button>
+        <div class="janela-title">
+          <p class="title">Dica: 👀</p>
+        </div>
+        <div class="janela-body-dica">
+          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
+        </div>
+      </div>
+
+
 
       <!-- AJUDA -->
       <div class="janela ajuda">
@@ -392,11 +404,7 @@
         </div>
       </div>
 
-        
-
-      <!----------->
       <!--LETRAS -->
-      <!----------->
       <div class="letras-div">  </div>
 
       <!-- TECLADO -->

@@ -152,15 +152,17 @@ div.janela {
 }
 
 div.stats {
-    top: 20vh;
+    top: 180px;
 }
 
 div.dica {
     padding-bottom: 30px;
+    top: 100px;
 }
 
 div.ajuda {
     padding-bottom: 30px;
+    top: 100px;
 }
 
             @media only screen and (min-width: 768px){
@@ -171,24 +173,23 @@ div.ajuda {
             }
 
 
-div.gameover {
+
+div.winner, div.gameover {
     display: flex;
     flex: 1;
+    top: 100px;
     z-index: 0;
     padding: 12px 0px 0px 20px;
-    background: #732C4D;
     transition: 0.1s;
     box-shadow: 0px 0px 100px rgba(0,0,0,0.7);
 }
 
+div.gameover {
+    background: #732C4D;
+}
+
 div.winner {
-    display: flex;
-    flex: 1;
-    z-index: 0;
-    padding: 12px 0px 0px 20px;
     background: #2C967C;
-    transition: 0.1s;
-    box-shadow: 0px 0px 100px rgba(0,0,0,0.7);
 }
 
 div.janela-title {
@@ -198,14 +199,6 @@ div.janela-title {
 }
 
 div.janela-body {
-    font-size: 17px;
-    font-weight: 200;
-}
-
-div.janela-body-dica {
-    display: flex;
-    flex: 1;
-    justify-content: start;
     font-size: 17px;
     font-weight: 200;
 }
