@@ -101,7 +101,6 @@ div.secao-principal {
     height: 100%;
     flex-direction: column;
     align-items: center;
-    border: 2px dashed green;
 }
 
 div.corda-container {
