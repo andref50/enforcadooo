@@ -15,7 +15,7 @@
 
 html {
     margin: 0;
-    heigth: 100vh;
+    height: 100%;
     width: 100vw;
 }
 
@@ -33,6 +33,7 @@ div.container {
     flex-direction: column;
     justify-items: center;
     width: 100vw;
+    height: 92vh;
 
 }
 
@@ -95,12 +96,12 @@ h1.logo {
 
 div.secao-principal {
     display: flex;
+    flex: 1;
     width: 100vw;
-    height: 85vh;
+    height: 100%;
     flex-direction: column;
     align-items: center;
-    align-content: space-betweeen;
-    justify-items: center;
+    border: 2px dashed green;
 }
 
 div.corda-container {
@@ -128,7 +129,7 @@ div.corda-container {
 div.popup-overlay {
     position: absolute;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     background: black;
     opacity: 0%;
     pointer-events: none;
@@ -139,7 +140,7 @@ div.janela {
     display: flex;
     flex: 1;
     flex-direction: column;
-    top: 12vh;
+    top: 90px;;
     z-index: 1;
     background: #433D8B;
     padding: 24px;
@@ -152,17 +153,17 @@ div.janela {
 }
 
 div.stats {
-    top: 180px;
+    top: 165px;
 }
 
 div.dica {
     padding-bottom: 30px;
-    top: 100px;
+
 }
 
 div.ajuda {
     padding-bottom: 30px;
-    top: 100px;
+
 }
 
             @media only screen and (min-width: 768px){
@@ -177,7 +178,6 @@ div.ajuda {
 div.winner, div.gameover {
     display: flex;
     flex: 1;
-    top: 100px;
     z-index: 0;
     padding: 12px 0px 0px 20px;
     transition: 0.1s;
@@ -376,7 +376,7 @@ div.banco, div.banco-erro {
     align-items: center;
     background: #454465;
     width: 10vw;
-    height: 10vw;
+    height: 10vh;
     max-width: 50px;
     max-height: 50px;
     margin: 2px;

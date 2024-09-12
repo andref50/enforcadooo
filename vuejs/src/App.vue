@@ -69,7 +69,7 @@
   getScoreboard();
 
   // ------- JOGO ------- //
-  function mainFunction(kp){
+  function keyPressed(kp){
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
     const image = document.getElementsByClassName('corda');
@@ -145,7 +145,6 @@
       janelaAjuda();
     }
     else if(gameData['curDay'] == curDay) {
-
       retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
       if(gameData['game_status'] == 'lost'){
         showJanelaEndGame('gameover')
@@ -409,7 +408,7 @@
 
       <!-- TECLADO -->
       <div class="teclado-componente">
-        <Teclado @keyPressed="mainFunction"/>
+        <Teclado @keyPressed="keyPressed"/>
       </div>
 
     </div> <!--SECAO PRINCIPAL-->
