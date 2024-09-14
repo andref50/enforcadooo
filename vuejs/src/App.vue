@@ -16,9 +16,10 @@
   const server = import.meta.env.VITE_APP_API
 
   let palavra = ref('')
+  let palavraNormalize = ref('')
+  let palavraArr = ref('')
   let dica = ''
   let curDay = ref(0)
-  let palavraNormalize = ref('')
   let acertos = []
   let erros = []
   let num_erros = 0;
@@ -27,8 +28,7 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      // console.log(dados)
-      palavra = dados['palavra'].toUpperCase();
+      palavraArr = palavra = dados['palavra'].toUpperCase();;
       dica = dados['dica'];
       curDay = dados['curDay']
 
@@ -70,18 +70,21 @@
 
   // ------- JOGO ------- //
   function keyPressed(kp){
-    const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
-    const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
-    const image = document.getElementsByClassName('corda');
+    let arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
+    let arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
+    let image = document.getElementsByClassName('corda');
 
     if(palavraNormalize.includes(kp)){
+      palavraArr = palavraArr.replaceAll(kp, '')
+      // console.log(palavraArr)
       acertos.push(kp)
       arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === kp)
                   .map((e, i) => { 
                     setTimeout(() => {
                       e.classList = 'letra-correct'
                     }, 100 * i)
-                  })
+                  })       
+
     } else {
       erros.push(kp)
       num_erros += 1;
@@ -91,7 +94,8 @@
     }
 
     // CHECK IF WIN
-    if(arrSelectdiv.length - 1 == 0) {
+    if(palavraArr.length === 0) {
+
         endGame('winner')
         showJanelaEndGame('winner')
       }
@@ -145,6 +149,7 @@
       janelaAjuda();
     }
     else if(gameData['curDay'] == curDay) {
+
       retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
       if(gameData['game_status'] == 'lost'){
         showJanelaEndGame('gameover')

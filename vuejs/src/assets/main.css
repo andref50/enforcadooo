@@ -15,8 +15,8 @@
 
 html {
     margin: 0;
-    height: 100%;
     width: 100vw;
+    height: 100%;
 }
 
 body {
@@ -33,7 +33,7 @@ div.container {
     flex-direction: column;
     justify-items: center;
     width: 100vw;
-    height: 92vh;
+    height: 100dvh;
 
 }
 
@@ -98,7 +98,6 @@ div.secao-principal {
     display: flex;
     flex: 1;
     width: 100vw;
-    height: 100%;
     flex-direction: column;
     align-items: center;
 }
@@ -111,7 +110,7 @@ div.corda-container {
     object-position: right top;
 }
 
-.corda {
+div.corda {
     display: flex;
     flex: auto;
     width: 100%;
@@ -287,7 +286,8 @@ button:hover {
 button.helpers, button.placeholder {
     width: 35px;
     max-width: 40px;
-    font-size: 0.8rem;
+    font-size: 1rem;
+    padding: 0.4rem;
     margin: 2px;
  }
 
@@ -324,8 +324,7 @@ div.keyboard-div {
     display: flex;
     width: 100vw;
     flex-direction: column;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 0.5rem;
  }
 
             @media only screen and (min-width: 1200px) {
@@ -375,7 +374,7 @@ div.banco, div.banco-erro {
     align-items: center;
     background: #454465;
     width: 10vw;
-    height: 10vh;
+    height: 15vh;
     max-width: 50px;
     max-height: 50px;
     margin: 2px;
@@ -399,7 +398,7 @@ div.letras-div {
     flex-wrap: no-wrap;
     justify-content: center;
     gap: 0.3rem;
-    padding: 12px 20px 0 20px;
+    padding: 0px 20px 0 20px;
     width: 100vw;
     margin-bottom: 1.5rem;
     justify-content: center;
