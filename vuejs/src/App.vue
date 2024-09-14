@@ -36,7 +36,7 @@
       console.log('Error fecthing data.')
       }
 
-    palavraNormalize = normalizeAcento(palavra);
+    palavraArr = palavraNormalize = normalizeAcento(palavra);
     
     updateDica();
     criaJogo();
