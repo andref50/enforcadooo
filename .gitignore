@@ -32,4 +32,4 @@ coverage
 /server/env/
 /server/venv/
 
-database
+/server/database/
