@@ -15,7 +15,7 @@ data = {}
 
 # SQLITE3 DATABASE CONNECTION
 path = os.path.dirname(os.path.abspath(__file__))
-db = os.path.join(path, 'database/wordlist_db')
+db = os.path.join(path, 'database/wordlist_db__dev')
 
 # RETRIEVE DATA
 with sqlite3.connect(db) as conn:
@@ -106,3 +106,4 @@ def actual_status():
 
 if __name__ == '__main__':
     app.run()
+    # app.run(host='0.0.0.0')

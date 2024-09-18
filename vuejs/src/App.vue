@@ -16,9 +16,10 @@
   const server = import.meta.env.VITE_APP_API
 
   let palavra = ref('')
+  let palavraNormalize = ref('')
+  let palavraArr = ref('')
   let dica = ''
   let curDay = ref(0)
-  let palavraNormalize = ref('')
   let acertos = []
   let erros = []
   let num_erros = 0;
@@ -27,8 +28,7 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      // console.log(dados)
-      palavra = dados['palavra'].toUpperCase();
+      palavraArr = palavra = dados['palavra'].toUpperCase();;
       dica = dados['dica'];
       curDay = dados['curDay']
 
@@ -36,9 +36,11 @@
       console.log('Error fecthing data.')
       }
 
-    palavraNormalize = normalizeAcento(palavra);
-
-    gameStart();
+    palavraArr = palavraNormalize = normalizeAcento(palavra);
+    
+    updateDica();
+    criaJogo();
+    initStatus();
   });
 
   // WINDOW MANAGER BOOL
@@ -67,52 +69,46 @@
   getScoreboard();
 
   // ------- JOGO ------- //
-  function mainFunction(kp){
-    const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
-    const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
-    const image = document.getElementsByClassName('corda');
+  function keyPressed(kp){
+    let arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
+    let arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
+    let image = document.getElementsByClassName('corda');
 
     if(palavraNormalize.includes(kp)){
+      palavraArr = palavraArr.replaceAll(kp, '')
+      // console.log(palavraArr)
       acertos.push(kp)
       arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === kp)
                   .map((e, i) => { 
                     setTimeout(() => {
                       e.classList = 'letra-correct'
                     }, 100 * i)
-                  })
-      if(arrSelectdiv.length - 1 == 0) {
-        endGame('winner')
-        showJanelaEndGame('winner')
-      }
+                  })       
+
     } else {
       erros.push(kp)
       num_erros += 1;
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
       image.item(0).src = bodyStates[num_erros];
-      if(num_erros == 6) {
-        endGame('gameover')
-        showJanelaEndGame('gameover')
-      }
-    }
-  }
-
-  function gameStart(){
-    updateDica();
-    criaJogo();
-
-    if (gameData['game_status'] == 'init'){
-      janelaAjuda();
     }
 
-    if(gameData['curDay'] == curDay) {
-      disableKeyboard();
-      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
-      if(gameData['game_status'] == 'lost'){
-        showJanelaEndGame('gameover')
-      } else {
+    // CHECK IF WIN
+    if(palavraArr.length === 0) {
+
+        endGame('winner')
         showJanelaEndGame('winner')
       }
+
+    // CHECK IF LOSE
+    if(num_erros == 6) {
+      endGame('gameover')
+      showJanelaEndGame('gameover')
+      arrSelectdiv.map((e, i) => { 
+                    setTimeout(() => {
+                      e.classList = 'letra-incorrect'
+                    }, 100 * i)
+                  })
     }
   }
 
@@ -148,6 +144,21 @@
     image.item(0).src = bodyStates[le.length];
   }
 
+  function initStatus(){
+    if (gameData['game_status'] == 'init'){
+      janelaAjuda();
+    }
+    else if(gameData['curDay'] == curDay) {
+
+      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
+      if(gameData['game_status'] == 'lost'){
+        showJanelaEndGame('gameover')
+      } else {
+        showJanelaEndGame('winner')
+      }
+    }
+  }
+
   function criaJogo() {
     var div = document.getElementsByClassName("letras-div").item(0); 
     for(let c in palavra){
@@ -161,16 +172,8 @@
     }
   }
 
-  function disableKeyboard(){
-  const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
-  arrButtons.forEach(element => {
-    element.classList = 'keyboard-disabled'
-    })
-  }
-
   async function endGame(event){
     let gameResult;
-    disableKeyboard();
 
     if(event === 'winner'){
       totalVitorias += 1;
@@ -199,6 +202,7 @@
                                           },
                                   body: JSON.stringify(finalGamePOSTRequest)});
       const statusCheck = await response.json();
+      // console.log(statusCheck)
       }
       catch(error){
         console.log(error)
@@ -207,6 +211,7 @@
   
 
   function showJanelaEndGame(event){
+    disableKeyboard();
     setTimeout(() => {
       document.getElementsByClassName(event).item(0).style.opacity = '100%'
       document.getElementsByClassName(event).item(0).style.visibility = "visible";
@@ -218,6 +223,13 @@
       janelaStats();
     }, 550)
 
+  }
+
+  function disableKeyboard(){
+  const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
+  arrButtons.forEach(element => {
+    element.classList = 'keyboard-disabled'
+    })
   }
 
 
@@ -238,7 +250,6 @@
       const ajudawindow = document.getElementsByClassName('ajuda');
       ajudawindow.item(0).style.opacity = '100%';
       ajudawindow.item(0).style.visibility = "visible";
-
     }
   }
 
@@ -279,8 +290,7 @@
 
   <!-- CONTAINER -->
   <div class="container">
-    <div class="popup-overlay"></div>
-
+    
     <!-- TOPO -->
     <Topo @janelaDicaEvent="janelaDica"
           @janelaAjudaEvent="janelaAjuda"
@@ -288,6 +298,9 @@
 
     <!-- PRINCIPAL -->
     <div class="secao-principal">
+
+      <div class="popup-overlay"></div>
+
 
       <!-- GAME OVER -->
       <div class="janela gameover">
@@ -302,17 +315,6 @@
         <!-- <button @click="closeWindow" class="close-button btn-winner"> x </button> -->
         <div class="janela-title">
           <p class="title title-winner-lose">Parabéns :)</p>
-        </div>
-      </div>
-
-      <!-- DICA -->
-      <div class="janela dica">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title">Dica: 👀</p>
-        </div>
-        <div class="janela-body-dica">
-          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
         </div>
       </div>
 
@@ -336,7 +338,21 @@
             </div>
           </div>
         </div>
+    
       </div>
+
+      <!-- DICA -->
+      <div class="janela dica">
+        <button @click="closeWindow" class="close-button"> x </button>
+        <div class="janela-title">
+          <p class="title">Dica: 👀</p>
+        </div>
+        <div class="janela-body-dica">
+          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
+        </div>
+      </div>
+
+
 
       <!-- AJUDA -->
       <div class="janela ajuda">
@@ -392,16 +408,12 @@
         </div>
       </div>
 
-        
-
-      <!----------->
       <!--LETRAS -->
-      <!----------->
       <div class="letras-div">  </div>
 
       <!-- TECLADO -->
       <div class="teclado-componente">
-        <Teclado @keyPressed="mainFunction"/>
+        <Teclado @keyPressed="keyPressed"/>
       </div>
 
     </div> <!--SECAO PRINCIPAL-->

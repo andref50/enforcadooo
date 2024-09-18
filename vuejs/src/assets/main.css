@@ -15,8 +15,8 @@
 
 html {
     margin: 0;
-    heigth: 100vh;
     width: 100vw;
+    height: 100%;
 }
 
 body {
@@ -33,6 +33,7 @@ div.container {
     flex-direction: column;
     justify-items: center;
     width: 100vw;
+    height: 100dvh;
 
 }
 
@@ -95,12 +96,10 @@ h1.logo {
 
 div.secao-principal {
     display: flex;
+    flex: 1;
     width: 100vw;
-    height: 85vh;
     flex-direction: column;
     align-items: center;
-    align-content: space-betweeen;
-    justify-items: center;
 }
 
 div.corda-container {
@@ -111,7 +110,7 @@ div.corda-container {
     object-position: right top;
 }
 
-.corda {
+div.corda {
     display: flex;
     flex: auto;
     width: 100%;
@@ -128,7 +127,7 @@ div.corda-container {
 div.popup-overlay {
     position: absolute;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     background: black;
     opacity: 0%;
     pointer-events: none;
@@ -139,7 +138,7 @@ div.janela {
     display: flex;
     flex: 1;
     flex-direction: column;
-    top: 12vh;
+    top: 90px;;
     z-index: 1;
     background: #433D8B;
     padding: 24px;
@@ -152,15 +151,17 @@ div.janela {
 }
 
 div.stats {
-    top: 20vh;
+    top: 165px;
 }
 
 div.dica {
     padding-bottom: 30px;
+
 }
 
 div.ajuda {
     padding-bottom: 30px;
+
 }
 
             @media only screen and (min-width: 768px){
@@ -171,24 +172,22 @@ div.ajuda {
             }
 
 
-div.gameover {
+
+div.winner, div.gameover {
     display: flex;
     flex: 1;
     z-index: 0;
     padding: 12px 0px 0px 20px;
-    background: #732C4D;
     transition: 0.1s;
     box-shadow: 0px 0px 100px rgba(0,0,0,0.7);
 }
 
+div.gameover {
+    background: #732C4D;
+}
+
 div.winner {
-    display: flex;
-    flex: 1;
-    z-index: 0;
-    padding: 12px 0px 0px 20px;
     background: #2C967C;
-    transition: 0.1s;
-    box-shadow: 0px 0px 100px rgba(0,0,0,0.7);
 }
 
 div.janela-title {
@@ -198,14 +197,6 @@ div.janela-title {
 }
 
 div.janela-body {
-    font-size: 17px;
-    font-weight: 200;
-}
-
-div.janela-body-dica {
-    display: flex;
-    flex: 1;
-    justify-content: start;
     font-size: 17px;
     font-weight: 200;
 }
@@ -295,7 +286,8 @@ button:hover {
 button.helpers, button.placeholder {
     width: 35px;
     max-width: 40px;
-    font-size: 0.8rem;
+    font-size: 1rem;
+    padding: 0.4rem;
     margin: 2px;
  }
 
@@ -332,8 +324,7 @@ div.keyboard-div {
     display: flex;
     width: 100vw;
     flex-direction: column;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 0.5rem;
  }
 
             @media only screen and (min-width: 1200px) {
@@ -383,7 +374,7 @@ div.banco, div.banco-erro {
     align-items: center;
     background: #454465;
     width: 10vw;
-    height: 10vw;
+    height: 15vh;
     max-width: 50px;
     max-height: 50px;
     margin: 2px;
@@ -407,7 +398,7 @@ div.letras-div {
     flex-wrap: no-wrap;
     justify-content: center;
     gap: 0.3rem;
-    padding: 12px 20px 0 20px;
+    padding: 0px 20px 0 20px;
     width: 100vw;
     margin-bottom: 1.5rem;
     justify-content: center;
