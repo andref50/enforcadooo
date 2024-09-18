@@ -32,5 +32,4 @@ coverage
 /server/env/
 /server/venv/
 
-/server/database/wordlist_db__dev
-/server/database/wordlist_db
+database

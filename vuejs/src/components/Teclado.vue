@@ -10,7 +10,6 @@
     if (kp != 'enter')  { t.target.classList = 'keyboard-disabled' } 
     else                { t.target.classList = 'keyboard-enter-disabled'}
     emit("keyPressed", kp);
-    // return kp;
   }
 
 </script>
