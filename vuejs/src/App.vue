@@ -75,9 +75,11 @@
     let image = document.getElementsByClassName('corda')
 
 
-    // if(palavraNormalize.includes(kp)){
-    //   palavraArr = palavraArr.replaceAll(kp, '')
-    //   acertos.push(kp)
+    if(palavraNormalize.includes(kp)){
+      palavraArr = palavraArr.replaceAll(kp, '')
+      acertos.push(kp)
+
+      let temp = []
     //   arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === palavraNormalize.charAt(kp))
     //               .map((e, i) => { 
     //                 setTimeout(() => {
@@ -89,12 +91,18 @@
       if (palavraNormalize[i] === kp){
         for (let j = 0; j < arrSelectdiv.length; j++){
           if (arrSelectdiv[j].innerHTML == i){
+            temp.push(arrSelectdiv[j])
             arrSelectdiv[j].innerHTML = palavraNormalize[i]
-            arrSelectdiv[j].classList = 'letra-correct'
           }
         }
       }
     }
+
+    temp.map((e, i) => { 
+                    setTimeout(() => {
+                      e.classList = 'letra-correct'
+                    }, 100 * i)
+                  })
 
     } else {
       erros.push(kp)
