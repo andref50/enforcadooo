@@ -72,18 +72,29 @@
   function keyPressed(kp){
     let arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     let arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
-    let image = document.getElementsByClassName('corda');
+    let image = document.getElementsByClassName('corda')
 
-    if(palavraNormalize.includes(kp)){
-      palavraArr = palavraArr.replaceAll(kp, '')
-      // console.log(palavraArr)
-      acertos.push(kp)
-      arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === kp)
-                  .map((e, i) => { 
-                    setTimeout(() => {
-                      e.classList = 'letra-correct'
-                    }, 100 * i)
-                  })       
+
+    // if(palavraNormalize.includes(kp)){
+    //   palavraArr = palavraArr.replaceAll(kp, '')
+    //   acertos.push(kp)
+    //   arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === palavraNormalize.charAt(kp))
+    //               .map((e, i) => { 
+    //                 setTimeout(() => {
+    //                   e.classList = 'letra-correct'
+    //                 }, 100 * i)
+    //               })
+                  
+    for (let i = 0; i <= palavraNormalize.length; i++){
+      if (palavraNormalize[i] === kp){
+        for (let j = 0; j < arrSelectdiv.length; j++){
+          if (arrSelectdiv[j].innerHTML == i){
+            arrSelectdiv[j].innerHTML = palavraNormalize[i]
+            arrSelectdiv[j].classList = 'letra-correct'
+          }
+        }
+      }
+    }
 
     } else {
       erros.push(kp)
@@ -164,7 +175,8 @@
     for(let c in palavra){
       var p = document.createElement('p1');
       p.classList.add('letra-hidden');
-      p.innerText = palavra[c];
+      // p.innerText = palavra[c];
+      p.innerText = c;
       if(palavra[c] === " "){
         p.classList.add('opacity-0', 'blank')
       }
