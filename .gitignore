@@ -31,5 +31,3 @@ coverage
 
 /server/env/
 /server/venv/
-
-/server/database/
