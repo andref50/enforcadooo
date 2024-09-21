@@ -79,31 +79,23 @@
       palavraArr = palavraArr.replaceAll(kp, '')
       acertos.push(kp)
 
-      let temp = []
-    //   arrSelectdiv.filter(e => normalizeAcento(e.innerHTML) === palavraNormalize.charAt(kp))
-    //               .map((e, i) => { 
-    //                 setTimeout(() => {
-    //                   e.classList = 'letra-correct'
-    //                 }, 100 * i)
-    //               })
-                  
-    for (let i = 0; i <= palavraNormalize.length; i++){
-      if (palavraNormalize[i] === kp){
-        for (let j = 0; j < arrSelectdiv.length; j++){
-          if (arrSelectdiv[j].innerHTML == i){
-            temp.push(arrSelectdiv[j])
-            arrSelectdiv[j].innerHTML = palavraNormalize[i]
+    let temp = []
+
+      for (let i = 0; i <= palavraNormalize.length; i++){
+        if (palavraNormalize[i] === kp){
+          for (let j = 0; j < arrSelectdiv.length; j++){
+            if (arrSelectdiv[j].innerHTML == i){
+              temp.push(arrSelectdiv[j])
+              arrSelectdiv[j].innerHTML = palavraNormalize[i]
+            }
           }
         }
       }
-    }
-
     temp.map((e, i) => { 
                     setTimeout(() => {
                       e.classList = 'letra-correct'
                     }, 100 * i)
                   })
-
     } else {
       erros.push(kp)
       num_erros += 1;
@@ -125,6 +117,7 @@
       showJanelaEndGame('gameover')
       arrSelectdiv.map((e, i) => { 
                     setTimeout(() => {
+                      e.innerHTML = palavraNormalize.charAt(e.innerHTML)
                       e.classList = 'letra-incorrect'
                     }, 100 * i)
                   })
@@ -135,22 +128,23 @@
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
     const image = document.getElementsByClassName('corda');
-
     
-    arrSelectdiv
-                .filter(e => la.includes(normalizeAcento(e.innerHTML)))
-                .map((e, i) => { 
-                  setTimeout(() => {
-                    e.classList = 'letra-correct'
-                  }, 50 * i)
-                })
-    arrSelectdiv
-                .filter(e => !la.includes(normalizeAcento(e.innerHTML)))
-                .map((e, i) => { 
-                  setTimeout(() => {
-                    e.classList = 'letra-not-guessed'
-                  }, 50 * i)
-                })
+    for (let i = 0; i < palavraNormalize.length; i++){
+      if (la. includes(palavraNormalize[i])){
+        arrSelectdiv[i].innerHTML = palavraNormalize[i]
+        setTimeout(() => {
+          arrSelectdiv[i].classList = 'letra-correct'
+        }, 50 * i + 1)
+
+      }
+      else {
+        arrSelectdiv[i].innerHTML = palavraNormalize[i]
+        setTimeout(() => {
+          arrSelectdiv[i].classList = 'letra-not-guessed'
+        }, 50 * i + 1)
+        
+      }
+    }
 
     arrBancoDiv
               .slice(0, le.length)
