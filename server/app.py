@@ -1,4 +1,5 @@
 import os
+from sys import platform
 import sqlite3
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -15,7 +16,20 @@ data = {}
 
 # SQLITE3 DATABASE CONNECTION
 path = os.path.dirname(os.path.abspath(__file__))
-db = os.path.join(path, 'database/wordlist_db__dev')
+if platform == 'win32':
+    db = os.path.join(path, 'database/wordlist_db__dev')
+    print(f'┌───────────────────────────────────┐')
+    print(f'│   UTILIZANDO BANCO DE DADOS DEV   │')
+    print(f'│               {platform}               │')
+    print(f'└───────────────────────────────────┘')
+else:
+    db = os.path.join(path, 'database/wordlist_db')
+    print(f'┌───────────────────────────────────┐')
+    print(f'│  UTILIZANDO BANCO DE DADOS PROD   │')
+    print(f'│               {platform}               │')
+    print(f'└───────────────────────────────────┘')
+
+    
 
 # RETRIEVE DATA
 with sqlite3.connect(db) as conn:
@@ -66,6 +80,7 @@ def update_word():
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(update_word, 'cron', hour=3)
+# scheduler.add_job(update_word, 'interval', minutes=1)
 scheduler.start()
 
 
@@ -76,7 +91,10 @@ def index():
     
     if request.method == 'POST':
         path = os.path.dirname(os.path.abspath(__file__))
-        db = os.path.join(path, 'database/wordlist_db')
+        if platform == 'win32':
+            db = os.path.join(path, 'database/wordlist_db__dev')
+        else:
+            db = os.path.join(path, 'database/wordlist_db')
         with sqlite3.connect(db) as conn:
             cursor = conn.cursor()
 
@@ -95,7 +113,10 @@ def index():
 @app.route('/xyz', methods = ['GET'])
 def actual_status():
     path = os.path.dirname(os.path.abspath(__file__))
-    db = os.path.join(path, 'database/wordlist_db')
+    if platform == 'win32':
+        db = os.path.join(path, 'database/wordlist_db__dev')
+    else:   
+        db = os.path.join(path, 'database/wordlist_db')
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM WORDLIST WHERE ativa=True;")

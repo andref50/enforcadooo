@@ -86,7 +86,7 @@
           for (let j = 0; j < arrSelectdiv.length; j++){
             if (arrSelectdiv[j].innerHTML == i){
               temp.push(arrSelectdiv[j])
-              arrSelectdiv[j].innerHTML = palavraNormalize[i]
+              arrSelectdiv[j].innerHTML = palavra[i]
             }
           }
         }
@@ -131,14 +131,14 @@
     
     for (let i = 0; i < palavraNormalize.length; i++){
       if (la. includes(palavraNormalize[i])){
-        arrSelectdiv[i].innerHTML = palavraNormalize[i]
+        arrSelectdiv[i].innerHTML = palavra[i]
         setTimeout(() => {
           arrSelectdiv[i].classList = 'letra-correct'
         }, 50 * i + 1)
 
       }
       else {
-        arrSelectdiv[i].innerHTML = palavraNormalize[i]
+        arrSelectdiv[i].innerHTML = palavra[i]
         setTimeout(() => {
           arrSelectdiv[i].classList = 'letra-not-guessed'
         }, 50 * i + 1)
