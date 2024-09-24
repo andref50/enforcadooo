@@ -128,6 +128,8 @@
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
     const image = document.getElementsByClassName('corda');
+
+    erros = le
     
     for (let i = 0; i < palavraNormalize.length; i++){
       if (la. includes(palavraNormalize[i])){
@@ -233,10 +235,55 @@
       document.getElementById('total-lose-text').innerHTML = totalDerrotas;
     }, 500)
 
+    let cdDiv = document.querySelector('.countdown-div')
+    let cdRoot = document.querySelector('#countdown')
+    let cdTitle = document.createElement('p')
+    cdTitle.classList.add('countdown-title')
+    cdTitle.innerText = 'PRÓXIMA PALAVRA:'
+    cdDiv.appendChild(cdTitle)
+
+    let countdown = document.createElement('p')
+    countdown.classList.add('countdown')
+    // countdown.innerText = '14:22:26'
+    cdDiv.appendChild(countdown)
+    cdRoot.style.display = "flex"
+    cdRoot.style.flex = "1"
+    cdRoot.style.flexDirection = 'column '
+    
+
+    // Set the date we're counting down to
+    const now = new Date()
+    var countDownDate = new Date("Jan 5, 2030 23:59:59").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the result in the element with id="demo"
+      countdown.innerHTML = hours + "h " + ( minutes < 10 ? "0" + minutes : minutes) + "m " + ( seconds < 10 ? "0" + seconds : seconds) + "s ";
+
+    // If the count down is finished, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        countdown.innerHTML = "EXPIRED";
+      }
+    }, 1000);
+
+
     setTimeout(() => {
       janelaStats();
     }, 550)
-
   }
 
   function disableKeyboard(){
@@ -298,6 +345,19 @@
   function updateDica(){
     document.getElementById('dica-text-body').innerHTML = dica;
   }
+
+  async function comparilhe(){
+    const shareResultText = {
+      0: '🔥Joguei Enforcado e acertei de primeira! \n🟩🟩🟩🟩🟩🟩 \nTente em enforcado.app',
+      1: '🔥Joguei Enforcado e acertei na segunda! \n🟥🟩🟩🟩🟩🟩 \nTente em enforcado.app',
+      2: '🔥Joguei Enforcado e acertei na terceira! \n🟥🟥🟩🟩🟩🟩 \nTente em enforcado.app',
+      3: '🔥Joguei Enforcado e até que fui bem! \n🟥🟥🟥🟩🟩🟩 \nTente em enforcado.app',
+      4: '🔥Quase! Acertei Enforcado na penúltima! 🔥 \n🟥🟥🟥🟥🟩🟩 \nTente em enforcado.app',
+      5: '🔥Quase! Acertei Enforcado na última! \n🟥🟥🟥🟥🟥🟩 \nTente em enforcado.app',
+      6: '😔Joguei Enforcado, mas não foi dessa vez :/ \n🟥🟥🟥🟥🟥🟥\nTente em enforcado.app'
+    }
+    await navigator.share({'text': shareResultText[erros.length]})
+  }
 </script>
 
 <template>
@@ -351,6 +411,13 @@
               <br>
             </div>
           </div>
+          <div id="countdown">
+            <div class="countdown-div">
+            </div>
+            <div class="compartilhe">
+              <button @click="comparilhe">➥ Compartilhe</button>
+            </div>
+          </div>
         </div>
     
       </div>
@@ -375,7 +442,7 @@
           <p class="title">Como jogar:</p>
         </div>
         <div class="janela-body">
-          <p>Enforcad.ooo é o jogo da forca </p>
+          <p>Enforcado é o jogo da forca </p>
           <p>que você já conhece de cara nova :)</p>
           <br>
           <p>Tente adivinhar a palavra secreta 
