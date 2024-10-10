@@ -356,6 +356,7 @@
       5: '🔥Quase! Acertei Enforcado na última! \n🟥🟥🟥🟥🟥🟩 \nTente em enforcado.app',
       6: '😔Joguei Enforcado, mas não foi dessa vez :/ \n🟥🟥🟥🟥🟥🟥\nTente em enforcado.app'
     }
+    
     await navigator.share({'text': shareResultText[erros.length]})
   }
 </script>
