@@ -1,14 +1,13 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-# app.config.from_object(__name__)
-# app.config['CORS_HEADERS'] = 'Content-Type'
-# CORS(app, resources={r'/*': {'origins': '*'}})
 
-app.route('/', methods=['GET'])
+
+@app.route('/', methods=['GET'])
 def stats():
-    return jsonify({'data': 'oiiii'})
+    if request.method == 'GET':
+        print('oi')
+        return '<h1>Oiii</h1>'
 
 if __name__ == '__main__':
     app.run()
