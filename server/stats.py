@@ -11,5 +11,4 @@ def stats():
     return '<h1>Oiii</h1>'
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=8001)
-    app.run()
+    app.run(host='0.0.0.0', port=8001)
