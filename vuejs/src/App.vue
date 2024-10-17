@@ -201,14 +201,14 @@
       finalGamePOSTRequest['status'] = 'lost'
     }
 
-    gameData['vitorias']    = totalVitorias;
-    gameData['derrotas']    = totalDerrotas;
-    gameData['game_status'] = gameResult;
-    gameData['curDay']      = curDay;
-    gameData['last_acertos'] = acertos;
-    gameData['last_erros']  = erros;
+    gameData['vitorias']      = totalVitorias;
+    gameData['derrotas']      = totalDerrotas;
+    gameData['game_status']   = gameResult;
+    gameData['curDay']        = curDay;
+    gameData['last_acertos']  = acertos;
+    gameData['last_erros']    = erros;
     localStorage.setItem('status', JSON.stringify(gameData))
-
+ 
     try {
       const response = await fetch(server, 
                                   {method: 'POST',
