@@ -1,10 +1,27 @@
 import os
 from sys import platform
+
+if platform == 'win32':
+    from dotenv import load_dotenv
+
 import sqlite3
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 
+import base64
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+
+if platform == 'win32':
+    BASEDIR = os.path.abspath(os.path.dirname(__file__))
+    load_dotenv(os.path.join(BASEDIR, '.env'))
+key = os.getenv('API_KEY')
+
+def encrypt (raw):
+    raw = pad(raw.encode(), 16)
+    cipher = AES.new(key.encode('utf-8'), AES.MODE_ECB)
+    return base64.b64encode(cipher.encrypt(raw))
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -30,7 +47,6 @@ else:
     print(f'└───────────────────────────────────┘')
 
     
-
 # RETRIEVE DATA
 with sqlite3.connect(db) as conn:
     cursor = conn.cursor()
@@ -41,7 +57,8 @@ with sqlite3.connect(db) as conn:
     cursor.execute("SELECT * FROM curDay")
     curDay_query = cursor.fetchone()
 
-    data['palavra'] = word_query[1]
+    # data['palavra'] = word_query[1]
+    data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
     data['dica']    = word_query[2]
     data['curDay']  = curDay_query[0]
 
@@ -69,7 +86,8 @@ def update_word():
         cursor.execute("SELECT * FROM curDay")
         curDay_query = cursor.fetchone()
 
-        data['palavra'] = word_query[1]
+        # data['palavra'] = word_query[1]
+        data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
         data['dica']    = word_query[2]
         data['curDay']  = curDay_query[0]
 
@@ -109,20 +127,6 @@ def index():
             conn.commit()
 
         return jsonify(asd)
-    
-@app.route('/xyz', methods = ['GET'])
-def actual_status():
-    path = os.path.dirname(os.path.abspath(__file__))
-    if platform == 'win32':
-        db = os.path.join(path, 'database/wordlist_db__dev')
-    else:   
-        db = os.path.join(path, 'database/wordlist_db')
-    with sqlite3.connect(db) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM WORDLIST WHERE ativa=True;")
-        word_query = cursor.fetchone()
-
-    return jsonify(word_query)
 
 
 if __name__ == '__main__':
