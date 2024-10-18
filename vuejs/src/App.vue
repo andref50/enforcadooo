@@ -1,5 +1,6 @@
 <script setup>
   import {onMounted, ref} from 'vue'
+  import { secret } from '@aws-amplify/backend'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
   import svgstate1 from './assets/svg/svg-state-1.svg'
@@ -24,7 +25,11 @@
   let erros = []
   let num_erros = 0;
 
+  let API_KEY = secret('API_KEY')
+
+
   onMounted(async () => {
+    console.log(API_KEY)
     try {
       const response = await fetch(server);
       const dados = await response.json();
