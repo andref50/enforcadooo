@@ -1,6 +1,6 @@
 <script setup>
   import {onMounted, ref} from 'vue'
-  import { secret } from '@aws-amplify/main'
+  import { secret } from '@aws-amplify/enforcadooo'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
   import svgstate1 from './assets/svg/svg-state-1.svg'
