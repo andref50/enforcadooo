@@ -38,11 +38,11 @@
       let k = 'NPxMG4yxGjb6999v'
       k = CryptoJS.enc.Utf8.parse(k)
       let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
-      palavraArr = palavra = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+      palavra = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
 
-      console.log(cr)
-      console.log(palavra)
-      console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
+      // console.log(cr)
+      // console.log(palavra)
+      // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
 
       } catch (error) {
       console.log('Error fecthing data: ' + error)
@@ -144,7 +144,7 @@
     erros = le
     
     for (let i = 0; i < palavraNormalize.length; i++){
-      if (la. includes(palavraNormalize[i])){
+      if (la.includes(palavraNormalize[i])){
         arrSelectdiv[i].innerHTML = palavra[i]
         setTimeout(() => {
           arrSelectdiv[i].classList = 'letra-correct'

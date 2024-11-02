@@ -32,6 +32,6 @@ coverage
 env/
 venv/
 
-/server/database/*
+server/database
 
 .env
