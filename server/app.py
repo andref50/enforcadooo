@@ -1,39 +1,56 @@
 import os
+import colorama
+from dotenv import load_dotenv
+
 import sqlite3
-from sys import platform
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import base64
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
+from Crypto.Util.Padding import pad
 
 
+#LOAD ENVIROMENT VARIABLES
+load_dotenv()
+KEY = os.getenv('API_KEY')
+DEV_PROD = os.getenv('DEV_PROD')
+
+
+# ENCRYPTION FUNCTION
+def encrypt (raw):
+    raw = pad(raw.encode(), 16)
+    cipher = AES.new(KEY.encode('utf-8'), AES.MODE_ECB)
+    return base64.b64encode(cipher.encrypt(raw))
+
+
+# INITIALIZE FLASK APP
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+
+# INITTIALIZE DATA OBJECT
 data = {}
+
 
 # SQLITE3 DATABASE CONNECTION
 path = os.path.dirname(os.path.abspath(__file__))
-if platform == 'win32':
+
+if DEV_PROD == 'DEVELOPMENT':
     db = os.path.join(path, 'database/wordlist_db__dev')
-    print(f'┌───────────────────────────────────┐')
-    print(f'│   UTILIZANDO BANCO DE DADOS DEV   │')
-    print(f'│               {platform}               │')
-    print(f'└───────────────────────────────────┘')
+    print(colorama.Fore.LIGHTBLUE_EX)
+    print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
+    print(colorama.Fore.RESET)
 else:
     db = os.path.join(path, 'database/wordlist_db')
-    print(f'┌───────────────────────────────────┐')
-    print(f'│  UTILIZANDO BANCO DE DADOS PROD   │')
-    print(f'│               {platform}               │')
-    print(f'└───────────────────────────────────┘')
+    print(colorama.Fore.LIGHTGREEN_EX)
+    print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
+    print(colorama.Fore.RESET)
 
-    
 
 # RETRIEVE DATA
 with sqlite3.connect(db) as conn:
@@ -45,7 +62,8 @@ with sqlite3.connect(db) as conn:
     cursor.execute("SELECT * FROM curDay")
     curDay_query = cursor.fetchone()
 
-    data['palavra'] = word_query[1]
+    # data['palavra'] = word_query[1]
+    data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
     data['dica']    = word_query[2]
     data['curDay']  = curDay_query[0]
 
@@ -73,7 +91,8 @@ def update_word():
         cursor.execute("SELECT * FROM curDay")
         curDay_query = cursor.fetchone()
 
-        data['palavra'] = word_query[1]
+        # data['palavra'] = word_query[1]
+        data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
         data['dica']    = word_query[2]
         data['curDay']  = curDay_query[0]
 
@@ -95,7 +114,7 @@ def index():
     
     if request.method == 'POST':
         path = os.path.dirname(os.path.abspath(__file__))
-        if platform == 'win32':
+        if DEV_PROD == 'DEVELOPMENT':
             db = os.path.join(path, 'database/wordlist_db__dev')
         else:
             db = os.path.join(path, 'database/wordlist_db')
@@ -113,20 +132,6 @@ def index():
             conn.commit()
 
         return jsonify(asd)
-    
-@app.route('/xyz', methods = ['GET'])
-def actual_status():
-    path = os.path.dirname(os.path.abspath(__file__))
-    if platform == 'win32':
-        db = os.path.join(path, 'database/wordlist_db__dev')
-    else:   
-        db = os.path.join(path, 'database/wordlist_db')
-    with sqlite3.connect(db) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM WORDLIST WHERE ativa=True;")
-        word_query = cursor.fetchone()
-
-    return jsonify(word_query)
 
 
 if __name__ == '__main__':

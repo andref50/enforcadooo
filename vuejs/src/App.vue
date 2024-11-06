@@ -18,6 +18,7 @@
   let palavra = ref('')
   let palavraNormalize = ref('')
   let palavraArr = ref('')
+  let cr = ref('')
   let dica = ''
   let curDay = ref(0)
   let acertos = []
@@ -29,12 +30,22 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      palavraArr = palavra = dados['palavra'].toUpperCase();;
+      // palavraArr = palavra = dados['palavra'].toUpperCase();
+      cr = dados['palavra']
       dica = dados['dica'];
       curDay = dados['curDay']
 
+      let k = 'NPxMG4yxGjb6999v'
+      k = CryptoJS.enc.Utf8.parse(k)
+      let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
+      palavra = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+
+      // console.log(cr)
+      // console.log(palavra)
+      // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
+
       } catch (error) {
-      console.log('Error fecthing data.')
+      console.log('Error fecthing data: ' + error)
       }
 
     palavraArr = palavraNormalize = normalizeAcento(palavra);
@@ -133,7 +144,7 @@
     erros = le
     
     for (let i = 0; i < palavraNormalize.length; i++){
-      if (la. includes(palavraNormalize[i])){
+      if (la.includes(palavraNormalize[i])){
         arrSelectdiv[i].innerHTML = palavra[i]
         setTimeout(() => {
           arrSelectdiv[i].classList = 'letra-correct'

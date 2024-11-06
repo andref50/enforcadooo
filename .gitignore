@@ -29,9 +29,9 @@ coverage
 
 *.tsbuildinfo
 
-server/env
-server/venv
+env/
+venv/
 
-/server/database/*
+server/database
 
-/cert
+.env
