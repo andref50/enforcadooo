@@ -1,10 +1,9 @@
 import os
-from sys import platform
-
-if platform == 'win32':
-    from dotenv import load_dotenv
+import colorama
+from dotenv import load_dotenv
 
 import sqlite3
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -13,40 +12,46 @@ import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
-if platform == 'win32':
-    BASEDIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(os.path.join(BASEDIR, '.env'))
-key = os.getenv('API_KEY')
 
+#LOAD ENVIROMENT VARIABLES
+load_dotenv()
+KEY = os.getenv('API_KEY')
+DEV_PROD = os.getenv('DEV_PROD')
+
+
+# ENCRYPTION FUNCTION
 def encrypt (raw):
     raw = pad(raw.encode(), 16)
-    cipher = AES.new(key.encode('utf-8'), AES.MODE_ECB)
+    cipher = AES.new(KEY.encode('utf-8'), AES.MODE_ECB)
     return base64.b64encode(cipher.encrypt(raw))
 
+
+# INITIALIZE FLASK APP
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+
+# INITTIALIZE DATA OBJECT
 data = {}
+
 
 # SQLITE3 DATABASE CONNECTION
 path = os.path.dirname(os.path.abspath(__file__))
-if platform == 'win32':
+
+if DEV_PROD == 'DEVELOPMENT':
     db = os.path.join(path, 'database/wordlist_db__dev')
-    print(f'┌───────────────────────────────────┐')
-    print(f'│   UTILIZANDO BANCO DE DADOS DEV   │')
-    print(f'│               {platform}               │')
-    print(f'└───────────────────────────────────┘')
+    print(colorama.Fore.LIGHTBLUE_EX)
+    print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
+    print(colorama.Fore.RESET)
 else:
     db = os.path.join(path, 'database/wordlist_db')
-    print(f'┌───────────────────────────────────┐')
-    print(f'│  UTILIZANDO BANCO DE DADOS PROD   │')
-    print(f'│               {platform}               │')
-    print(f'└───────────────────────────────────┘')
+    print(colorama.Fore.LIGHTGREEN_EX)
+    print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
+    print(colorama.Fore.RESET)
 
-    
+
 # RETRIEVE DATA
 with sqlite3.connect(db) as conn:
     cursor = conn.cursor()
@@ -109,7 +114,7 @@ def index():
     
     if request.method == 'POST':
         path = os.path.dirname(os.path.abspath(__file__))
-        if platform == 'win32':
+        if DEV_PROD == 'DEVELOPMENT':
             db = os.path.join(path, 'database/wordlist_db__dev')
         else:
             db = os.path.join(path, 'database/wordlist_db')
