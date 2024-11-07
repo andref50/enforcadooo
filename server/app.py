@@ -13,7 +13,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
 
-#LOAD ENVIROMENT VARIABLES
+#LOAD ENVIROMENT VARIABLE
 load_dotenv()
 KEY = os.getenv('API_KEY')
 DEV_PROD = os.getenv('DEV_PROD')
