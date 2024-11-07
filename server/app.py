@@ -14,10 +14,12 @@ from Crypto.Util.Padding import pad
 
 
 #LOAD ENVIROMENT VARIABLE
-load_dotenv()
-KEY = os.getenv('API_KEY')
-DEV_PROD = os.getenv('DEV_PROD')
+# load_dotenv()
+# KEY = os.getenv('API_KEY')
+# DEV_PROD = os.getenv('DEV_PROD')
 
+KEY = 'NPxMG4yxGjb6999v' 
+DEV_PROD = 'PRODUCTION'
 
 # ENCRYPTION FUNCTION
 def encrypt (raw):
