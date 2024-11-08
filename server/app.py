@@ -64,8 +64,8 @@ with sqlite3.connect(db) as conn:
     cursor.execute("SELECT * FROM curDay")
     curDay_query = cursor.fetchone()
 
-    # data['palavra'] = word_query[1]
-    data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
+    data['palavra'] = word_query[1]
+    #data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
     data['dica']    = word_query[2]
     data['curDay']  = curDay_query[0]
 
@@ -93,8 +93,8 @@ def update_word():
         cursor.execute("SELECT * FROM curDay")
         curDay_query = cursor.fetchone()
 
-        # data['palavra'] = word_query[1]
-        data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
+        data['palavra'] = word_query[1]
+        # data['palavra'] = encrypt(word_query[1]).decode('utf-8', 'ignore')
         data['dica']    = word_query[2]
         data['curDay']  = curDay_query[0]
 
@@ -104,7 +104,7 @@ def update_word():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, 'cron', hour=3)
+scheduler.add_job(update_word, 'cron', hour=13, minute=20)
 # scheduler.add_job(update_word, 'interval', minutes=1)
 scheduler.start()
 
