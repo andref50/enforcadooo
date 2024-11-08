@@ -30,27 +30,31 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      palavraArr = palavra = dados['palavra'].toUpperCase();
+      // palavraArr = palavra = dados['palavra'].toUpperCase();
       cr = dados['palavra']
       dica = dados['dica'];
       curDay = dados['curDay']
 
-      // let k = 'NPxMG4yxGjb6999v'
-      // k = CryptoJS.enc.Utf8.parse(k)
-      // let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
-      // palavra = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+      let k = 'NPxMG4yxGjb6999v'
+      k = CryptoJS.enc.Utf8.parse(k)
+      let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
+      palavra = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
 
-      // console.log(cr)
-      // console.log(palavra)
-      // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
+      console.log('cript: ', cr)
+      console.log('PALAVRA: ', palavra)
+      console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
+
+      palavraArr = palavraNormalize = normalizeAcento(palavra);
+
+      console.log('palavraArr:', palavraArr, 
+                  'palavranormalize: ', palavraNormalize, 
+                  'curDay ', curDay)
 
       } catch (error) {
       console.log('Error fecthing data: ' + error)
       }
 
-    palavraArr = palavraNormalize = normalizeAcento(palavra);
-    console.log(palavraArr, palavraNormalize, curDay)
-    
+
     updateDica();
     criaJogo();
     initStatus();
