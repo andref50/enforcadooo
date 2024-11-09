@@ -30,8 +30,8 @@
     try {
       const response = await fetch(server);
       const dados = await response.json();
-      palavraArr = palavra = dados['palavra'].toUpperCase();
-      cr = dados['palavra']
+      palavra = dados['palavra'].toUpperCase();
+      // cr = dados['palavra']
       dica = dados['dica'];
       curDay = dados['curDay']
 
@@ -44,12 +44,12 @@
       // console.log(palavra)
       // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
 
+      palavraArr = palavraNormalize = normalizeAcento(palavra);
+      // console.log(palavraArr, palavraNormalize, curDay)
+
       } catch (error) {
       console.log('Error fecthing data: ' + error)
       }
-
-    palavraArr = palavraNormalize = normalizeAcento(palavra);
-    console.log(palavraArr, palavraNormalize, curDay)
     
     updateDica();
     criaJogo();
