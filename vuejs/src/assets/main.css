@@ -359,7 +359,7 @@ div.tentativas-box {
     flex-direction: row;
     margin: 1.5rem;
     margin-top: 0vh;
-    items-gap: 1px;
+    gap: 1px;
     justify-content: center;
 }
 

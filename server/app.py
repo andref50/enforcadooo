@@ -45,12 +45,12 @@ path = os.path.dirname(os.path.abspath(__file__))
 if DEV_PROD == 'DEVELOPMENT':
     db = os.path.join(path, 'database/wordlist_db__dev')
     print(colorama.Fore.LIGHTBLUE_EX)
-    # print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
+    print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
     print(colorama.Fore.RESET)
 else:
     db = os.path.join(path, 'database/wordlist_db')
     print(colorama.Fore.LIGHTGREEN_EX)
-    # print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
+    print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
     print(colorama.Fore.RESET)
 
 
