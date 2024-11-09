@@ -45,12 +45,12 @@ path = os.path.dirname(os.path.abspath(__file__))
 if DEV_PROD == 'DEVELOPMENT':
     db = os.path.join(path, 'database/wordlist_db__dev')
     print(colorama.Fore.LIGHTBLUE_EX)
-    # print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
+    print(f'\n * ACTUAL MODE: 🔧 {DEV_PROD}\n')
     print(colorama.Fore.RESET)
 else:
     db = os.path.join(path, 'database/wordlist_db')
     print(colorama.Fore.LIGHTGREEN_EX)
-    # print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
+    print(f'\n\n * ACTUAL MODE: 🚀 {DEV_PROD}\n\n')
     print(colorama.Fore.RESET)
 
 
@@ -105,7 +105,7 @@ def update_word():
 
 scheduler = BackgroundScheduler()
 #scheduler.add_job(update_word, 'cron', hour=3)
-scheduler.add_job(update_word, 'interval', minutes=1)
+scheduler.add_job(update_word, 'interval', minutes=5)
 scheduler.start()
 
 
@@ -137,5 +137,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
-    # app.run(host='0.0.0.0')
+    # app.run()
+    app.run(host='0.0.0.0')
