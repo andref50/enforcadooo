@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{%block content%}
+    <div class="corda">
+        <img class="corda-svg" src="{{url_for('static', filename='imgs/svg-state-1.svg')}}">
+    </div>
+    <div class="formulario">
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="input-div">
+                {{ form.username.label(class="input_label") }}
+                {{ form.username(class="inputs") }}
+            </div>
+            <div class="input-div">
+                {{ form.password.label(class="input_label") }}
+                {{ form.password(class="inputs")}}
+            </div>
+            <div class="remember-div">
+                {{ form.remember_me(class="remember_me") }}
+                {{ form.remember_me.label }}
+            </div>
+            <div class="submit-div">
+                {{ form.submit(class="submit-button") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

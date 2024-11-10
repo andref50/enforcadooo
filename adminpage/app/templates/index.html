@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Index {% endblock %}
+
+{% block lado_direito %}
+    <div class="lado-direito-block">
+        <p class="p-logout">SAIR</p>
+        <img class="logout-svg" src="{{url_for('static', filename='imgs/logout.svg')}}">
+    </div>
+{% endblock %}
+
+{% block content %}
+<h2>Index</h2>
+<p>Enforcado é o jogo da forca que você já conhece de cara nova :)</p>
+{% endblock %}

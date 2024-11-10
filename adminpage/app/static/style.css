@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #1F2937;
+    font-family: Rubik;
+}
+
+.topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    background-color: #433D9B;
+    color: #E9C46A;
+    font-family: Bebas Neue, sans-serif;
+    box-shadow: 0px 3px rgba(0,0,0,0.8);
+}
+
+.titulo {
+    padding-top: 4px;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+.lado-direito-block {
+    display: flex;
+    flex-direction: row;
+    padding: 6px;
+    gap: 5px;
+    background-color: #F8EFFB;
+    border-radius: 4px;
+}
+
+.p-logout {
+    font-family: Rubik;
+    font-size: 12px;
+    font-weight: 600;
+    color: #17153B;
+}
+
+.logout-svg {
+    width: 12px;
+}
+
+h1 {
+    text-shadow: -3px 3px rgba(0,0,0,0.8);
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 90dvh;
+}
+
+.formulario {
+    display: flex;
+    flex: 1;
+    align-items: start;
+    justify-content: center;
+}
+
+.input-div {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.inputs {
+    background-color: #F8EFFB;
+    width: 150px;
+    padding: 10px 10px 8px 70px;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.input_label {
+    position: absolute;
+    left: 5px;
+    top: 4px;
+    color:  #85738D;
+    padding: 10px;
+    font-size: 0.75rem;
+}
+
+.submit-button {
+    padding: 5px 50px 5px 50px;
+    background-color: #C8ACD6;
+    font-family: 'Bebas Neue';
+    font-size: 20px;
+    font-weight: 800;
+    color: #17153B;
+    border-radius: 6px;
+}
+
+.remember-div, .submit-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.corda {
+    display: flex;
+    height: 30vh;
+    align-items: start;
+    justify-content: center;
+}
+
+.corda-svg {
+    width: 400px;
+}
+
+
