@@ -9,7 +9,7 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
-dist
+# dist 
 dist-ssr
 coverage
 *.local
@@ -29,9 +29,9 @@ coverage
 
 *.tsbuildinfo
 
-server/env/
-server/venv/
+env
+venv
 
-server/database
+database
 
 .env
