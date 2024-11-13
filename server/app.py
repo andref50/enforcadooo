@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 
 import sqlite3
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from app import app, db
+
+from flask import jsonify, request
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import base64
@@ -26,13 +27,6 @@ def encrypt (raw):
     raw = pad(raw.encode(), 16)
     cipher = AES.new(KEY.encode('utf-8'), AES.MODE_ECB)
     return base64.b64encode(cipher.encrypt(raw))
-
-
-# INITIALIZE FLASK APP
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
-CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 # INITTIALIZE DATA OBJECT
