@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="topo">
+        <div class="titulo">
+            <h1>ENFORCADO</h1>
+        </div>
+        <div class="lado-direito">
+            {% if current_user.is_authenticated %}
+                <a href="{{url_for('logout')}}">
+                    <div class="lado-direito-block">
+                        <p class="p-logout">SAIR</p>
+                        <img class="logout-svg" src="{{url_for('static', filename='imgs/logout.svg')}}">
+                    </div>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="content">
+        <div class="corda">
+            <img class="corda-svg" src="{{url_for('static', filename='imgs/svg-state-1.svg')}}">
+        </div>
+        {%block content%}
+        {% endblock %}
+    </div>
+</body>
+</html>

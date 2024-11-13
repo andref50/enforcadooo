@@ -102,10 +102,23 @@ def update_word():
 
         conn.commit()
 
+def refresh_word():
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM WORDLIST WHERE ativa=True;")
+        word_query = cursor.fetchone()
+
+        cursor.execute("SELECT * FROM curDay")
+        curDay_query = cursor.fetchone()
+
+        data['palavra'] = word_query[1]
+        data['dica']    = word_query[2]
+        data['curDay']  = curDay_query[0]
+
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(update_word, 'cron', hour=3)
-# scheduler.add_job(update_word, 'interval', minutes=1)
+scheduler.add_job(refresh_word, 'interval', minutes=1)
 scheduler.start()
 
 
@@ -137,5 +150,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
-    # app.run(host='0.0.0.0')
+    # app.run()
+    app.run(host='0.0.0.0', port=5001)

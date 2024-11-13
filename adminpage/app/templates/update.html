@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Index {% endblock %}
+
+
+{% block content %}
+    <a href="{{url_for('index')}}">
+        <div class="edit-button">
+            <p class="close-button">✕</p>
+        </div>
+    </a>
+    <div class="formulario">
+        <p class="update-label">EDITAR PALAVRA ATUAL</p>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="input-div">
+                {{ form.palavra.label(class="input_label") }}
+                {{ form.palavra(class="inputs") }}
+            </div>
+            <div class="input-div">
+                {{ form.dica.label(class="input_label") }}
+                {{ form.dica(class="inputs")}}
+            </div>
+            <div class="submit-div">
+                {{ form.submit(class="submit-button") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
