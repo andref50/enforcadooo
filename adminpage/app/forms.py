@@ -11,4 +11,5 @@ class LoginForm(FlaskForm):
 class UpdateWordForm(FlaskForm):
     palavra = StringField('Palavra', validators=[DataRequired()])
     dica = StringField('Dica', validators=[DataRequired()])
+    submit = SubmitField('UPDATE')
     

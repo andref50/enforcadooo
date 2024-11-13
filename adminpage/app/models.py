@@ -1,8 +1,8 @@
 from typing import Optional
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
+
 from app import db
-from app import login
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,11 +22,4 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
-    
-# @login.user_loader
-# def load_user(id):
-#     return db.session.get(User, int(id))
 
-# @login.unauthorized_handler
-# def unauthorized_user():
-#     return '<h1>SAI DAQUIIII</h1>'

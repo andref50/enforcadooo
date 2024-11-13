@@ -2,14 +2,48 @@
 
 {% block title %} Index {% endblock %}
 
-{% block lado_direito %}
-    <div class="lado-direito-block">
-        <p class="p-logout">SAIR</p>
-        <img class="logout-svg" src="{{url_for('static', filename='imgs/logout.svg')}}">
-    </div>
-{% endblock %}
-
 {% block content %}
-<h2>Index</h2>
-<p>Enforcado é o jogo da forca que você já conhece de cara nova :)</p>
+    <div class="atual-parent">
+        <p class="atual-title">PALAVRA DO DIA</p>
+        <div class="atual">
+            <div class="atual-topo">
+                <p class="palavra">{{current_word.palavra | capitalize}}</p>
+                <p class="palavra">({{current_word.dica | capitalize}})</p>
+            </div>
+            <div class="atual-bottom">
+                <div class="placar">
+                    <p class="placar-label">TOTAL</p>
+                    <p class="placar-text">{{current_word.acertos + current_word.erros}}</p>
+                </div>
+                <div class="linha"></div>
+                <div class="placar">
+                    <p class="placar-label">ACERTOS</p>
+                    <p class="placar-text">{{current_word.acertos}}</p>
+                </div>
+                <div class="placar">
+                    <p class="placar-label">ERROS</p>
+                    <p class="placar-text">{{current_word.erros}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="lista-palavras">
+        <table>
+            <tr>
+                <th>Palavra</th>
+                <th>Total</th>
+                <th>Acertos</th>
+                <th>Erros</th>
+            </tr>
+            {% for palavra in list_words %}
+            <tr>
+                <td class="td-palavra">{{palavra[1] | capitalize}} ({{palavra[2]}})</td>
+                <td>{{palavra[3] + palavra[4]}}</td>
+                <td>{{palavra[3]}}</td>
+                <td>{{palavra[4]}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
 {% endblock %}
