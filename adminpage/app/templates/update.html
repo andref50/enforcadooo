@@ -4,16 +4,13 @@
 
 
 {% block content %}
-    <div class="erro">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
+    <a href="{{url_for('index')}}">
+        <div class="edit-button">
+            <p class="close-button">✕</p>
+        </div>
+    </a>
     <div class="formulario">
+        <p class="update-label">EDITAR PALAVRA ATUAL</p>
         <form action="" method="post" novalidate>
             {{ form.hidden_tag() }}
             <div class="input-div">

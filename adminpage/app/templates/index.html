@@ -3,6 +3,11 @@
 {% block title %} Index {% endblock %}
 
 {% block content %}
+    <a href="{{url_for('update')}}">
+        <div class="edit-button">
+            <p>+</p>
+        </div>
+    </a>
     <div class="atual-parent">
         <p class="atual-title">PALAVRA DO DIA</p>
         <div class="atual">
