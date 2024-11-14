@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(update_word, 'cron', hour=3)
-# scheduler.add_job(update_word, 'interval', minutes=1)
+scheduler.add_job(update_word, 'interval', seconds=10)
 scheduler.add_job(refresh_word, 'interval', minutes=1)
 scheduler.start()
 

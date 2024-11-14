@@ -2,6 +2,8 @@ from app import app, db, data
 from app.models import Palavra, CurrentDay, UsedCount
 import sqlalchemy as sa
 
+from app.encryption import encrypt
+
 def update_word():
     with app.app_context():
         current_day = db.session.scalar(sa.select(CurrentDay))
@@ -11,19 +13,20 @@ def update_word():
         ativa.ativa = False
 
         usedCount = db.session.scalar(sa.select(UsedCount))
-        nova_palavra = db.session.scalar(sa.select(Palavra).where(Palavra.used == usedCount.usedCount).order_by(sa.func.random()))
+        palavra = db.session.scalar(sa.select(Palavra).where(Palavra.used == usedCount.usedCount).order_by(sa.func.random()))
 
-        if nova_palavra is None:
+        if palavra is None:
             usedCount.usedCount += 1
-            nova_palavra = db.session.scalar(sa.select(Palavra).where(Palavra.used == usedCount.usedCount).order_by(sa.func.random()))
+            palavra = db.session.scalar(sa.select(Palavra).where(Palavra.used == usedCount.usedCount).order_by(sa.func.random()))
 
-        nova_palavra.ativa = True
-        nova_palavra.used += 1
+        palavra.ativa = True
+        palavra.used += 1
 
         db.session.commit()
 
-        data.palavra = nova_palavra.palavra
-        data.dica    = nova_palavra.dica
+        data.palavra = palavra.palavra
+        data.palavra_encrypt = encrypt(palavra.palavra).decode('utf-8', 'ignore')
+        data.dica    = palavra.dica
         data.curDay  = current_day.curDay
 
         print(data.to_dict())
@@ -35,6 +38,7 @@ def refresh_word():
         current_day = db.session.scalar(sa.select(CurrentDay))
 
         data.palavra = palavra.palavra
+        data.palavra_encrypt = encrypt(palavra.palavra).decode('utf-8', 'ignore')
         data.dica    = palavra.dica
         data.curDay  = current_day.curDay
 

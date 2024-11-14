@@ -34,3 +34,5 @@ venv
 database
 .env
 __pycache__
+wordlist_db
+wordlist_db__dev

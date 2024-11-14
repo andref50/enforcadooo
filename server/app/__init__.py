@@ -14,7 +14,5 @@ db = SQLAlchemy(app)
 
 data = Data()
 
-
-
 from app import models
 

@@ -30,6 +30,7 @@ class UsedCount(Base):
 class Data:
     # def __init__(self):
     palavra: str
+    palavra_encrypt: str
     dica: str
     curDay: int
 
