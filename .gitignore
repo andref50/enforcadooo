@@ -31,7 +31,6 @@ coverage
 
 env
 venv
-
 database
-
 .env
+__pycache__
