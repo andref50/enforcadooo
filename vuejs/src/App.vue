@@ -39,7 +39,7 @@
       let k = 'NPxMG4yxGjb6999v'
       k = CryptoJS.enc.Utf8.parse(k)
       let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
-      palavra_decrpt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+      palavra_decrypt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
 
       console.log(cr)
       console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
