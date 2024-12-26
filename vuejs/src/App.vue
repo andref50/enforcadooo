@@ -41,9 +41,9 @@
       let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
       palavra_decrypt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
 
-      console.log(cr)
-      console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
-      console.log('Decrypted normalized: ' + normalizeAcento(decrypted.toString(CryptoJS.enc.Utf8)))
+      // console.log(cr)
+      // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
+      // console.log('Decrypted normalized: ' + normalizeAcento(decrypted.toString(CryptoJS.enc.Utf8)))
       console.log('Palavra_dectrypt: ', palavra_decrypt)
 
       palavraArr = palavraNormalize = normalizeAcento(palavra);
