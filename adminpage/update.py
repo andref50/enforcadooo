@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-db_stats = basedir + '/server/database/wordlist_db' 
+db_stats = basedir + '/server/database/wordlist_db__dev' 
 
 
 def current_word():
