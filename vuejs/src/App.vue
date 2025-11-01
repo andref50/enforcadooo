@@ -513,9 +513,5 @@
         <Teclado @keyPressed="keyPressed"/>
       </div>
 
-    </div> <!--SECAO PRINCIPAL-->
-
-
-
-  </div>
+    </div> <!--SECAO PRINCIPAL--> </div>
 </template>
