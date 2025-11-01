@@ -11,6 +11,5 @@ class Config:
     SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(parentdir, os.getenv('DATABASE_URL'))
     KEY = os.getenv('CIPHER_KEY')  
     DEV_PROD = os.getenv('DEV_PROD')
-
-# config = Config()
-# print(config.SQLALCHEMY_DATABASE_URI)
+config = Config()
+print(config.SQLALCHEMY_DATABASE_URI)
