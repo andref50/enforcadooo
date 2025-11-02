@@ -8,7 +8,8 @@ from app.models import Data
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app, resources={r'/*': {'origins': '*'}})
+# CORS(app, resources={r'/*': {'origins': '*'}})
+CORS(app, origins="http://enforcado.ddns.net/api")
 
 db = SQLAlchemy(app)
 
