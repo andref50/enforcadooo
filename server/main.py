@@ -15,7 +15,10 @@ scheduler.start()
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
-        return jsonify(data.to_dict())
+        response = jsonify(data.to_dict())
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        # return jsonify(data.to_dict())
+        return response
     
     if request.method == 'POST':
         req = request.json
