@@ -15,7 +15,7 @@ scheduler.start()
 
 
 @app.route('/', methods = ['GET', 'POST'])
-@cross_origin
+@cross_origin()
 def index(): 
     if request.method == 'GET':
         response = jsonify(data.to_dict())
