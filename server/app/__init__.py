@@ -8,7 +8,7 @@ from app.models import Data
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app, resources={r'/*': {'origins': '*'}}, support_credentials=True)
+CORS(app, resources={r'/*': {'origins': '*'}}, methods=["GET", "POST"], allow_headers=["Content-Type"])
 
 
 db = SQLAlchemy(app)
