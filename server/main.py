@@ -16,6 +16,8 @@ def index():
     if request.method == 'GET':
         response = jsonify(data.to_dict())
         response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         # return jsonify(data.to_dict())
         return response
     
