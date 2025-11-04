@@ -14,11 +14,7 @@ scheduler.start()
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
-        # response = jsonify(data.to_dict())
         response = data.to_dict()
-        print(response)
-        # # return jsonify(data.to_dict())
-
         return render_template('index.html', data=response)
     
     if request.method == 'POST':
