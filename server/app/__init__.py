@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from app.models import Data
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../../vuejs/dist/assets", template_folder="../../vuejs/dist")
 app.config.from_object(Config)
 CORS(app, resources={r'/*': {'origins': '*'}}, methods=["GET", "POST"], allow_headers=["Content-Type"])
 
@@ -17,3 +17,4 @@ data = Data()
 
 from app import models
 
+ 

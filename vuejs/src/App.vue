@@ -15,9 +15,12 @@
   
   const server = import.meta.env.VITE_APP_API
 
+  const dadosnovos = flaskData;
+  console.log(dadosnovos)
+
   let palavra = ref('')
   let palavra_decrypt = ref('')
-  let palavraNormalize = ref('')
+  let palavraNormalize = ref('') 
   let palavraArr = ref('')
   let cr = ref('')
   let dica = ''
@@ -28,30 +31,42 @@
 
 
   onMounted(async () => {
-    try {
-      const response = await fetch(server);
-      const dados = await response.json();
-      palavra = dados['palavra'].toUpperCase();
-      cr = dados['palavra_encrypt']
-      dica = dados['dica'];
-      curDay = dados['curDay']
+    // try {
+    //   const response = await fetch(server);
+    //   const dados = await response.json();
+    //   palavra = dados['palavra'].toUpperCase();
+    //   cr = dados['palavra_encrypt']
+    //   dica = dados['dica'];
+    //   curDay = dados['curDay']
 
-      let k = 'NPxMG4yxGjb6999v'
-      k = CryptoJS.enc.Utf8.parse(k)
-      let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
-      palavra_decrypt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+    //   let k = 'NPxMG4yxGjb6999v'
+    //   k = CryptoJS.enc.Utf8.parse(k)
+    //   let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
+    //   palavra_decrypt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
 
-      // console.log(cr)
-      // console.log('Decrypted: ' + decrypted.toString(CryptoJS.enc.Utf8))
-      // console.log('Decrypted normalized: ' + normalizeAcento(decrypted.toString(CryptoJS.enc.Utf8)))
-      console.log('Palavra_dectrypt: ', palavra_decrypt)
+    //   console.log('Palavra_dectrypt: ', palavra_decrypt)
 
-      palavraArr = palavraNormalize = normalizeAcento(palavra);
-      // console.log(palavraArr, palavraNormalize, curDay)
+    //   palavraArr = palavraNormalize = normalizeAcento(palavra);
+    //   // console.log(palavraArr, palavraNormalize, curDay)
 
-      } catch (error) {
-      console.log('Error fecthing data: ' + error)
-      }
+    //   } catch (error) {
+    //   console.log('Error fecthing data: ' + error)
+    //   }
+
+    palavra = flaskData.palavra;
+    palavra = palavra.toUpperCase();
+
+    palavraArr = palavraNormalize = normalizeAcento(palavra);
+
+    cr = flaskData.palavra_encrypt;
+    dica = flaskData.dica;
+    curDay = flaskData.curDay
+
+    console.log(palavra)
+    console.log(cr)
+    console.log(dica)
+    console.log(curDay)
+
     
     updateDica();
     criaJogo();

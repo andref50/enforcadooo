@@ -1,7 +1,7 @@
 from app import app, data
 from app.updates import update_word, refresh_word, update_placar
 
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -14,18 +14,17 @@ scheduler.start()
 @app.route('/', methods = ['GET', 'POST'])
 def index(): 
     if request.method == 'GET':
-        response = jsonify(data.to_dict())
-        response.headers.add('Access-Control-Allow-Origin', 'http://189.69.179.225:8080')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        # return jsonify(data.to_dict())
-        return response
+        # response = jsonify(data.to_dict())
+        response = data.to_dict()
+        print(response)
+        # # return jsonify(data.to_dict())
+
+        return render_template('index.html', data=response)
     
     if request.method == 'POST':
         req = request.json
         update_placar(req)
         return jsonify(req)
-
 
 if __name__ == '__main__':
     app.run()
