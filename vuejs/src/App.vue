@@ -15,9 +15,6 @@
   
   const server = import.meta.env.VITE_APP_API
 
-  const dadosnovos = flaskData;
-  console.log(dadosnovos)
-
   let palavra = ref('')
   let palavra_decrypt = ref('')
   let palavraNormalize = ref('') 
@@ -61,11 +58,6 @@
     cr = flaskData.palavra_encrypt;
     dica = flaskData.dica;
     curDay = flaskData.curDay
-
-    console.log(palavra)
-    console.log(cr)
-    console.log(dica)
-    console.log(curDay)
 
     
     updateDica();
@@ -248,7 +240,6 @@
                                           },
                                   body: JSON.stringify(finalGamePOSTRequest)});
       const statusCheck = await response.json();
-      // console.log(statusCheck)
       }
       catch(error){
         console.log(error)

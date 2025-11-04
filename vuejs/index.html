@@ -8,18 +8,11 @@
   </head>
   <body>
     <div id="app"></div>
-    <p> {{ name }} </p>
     <script type="module" src="/src/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         // Access the data passed from Flask
         const flaskData = {{ data | tojson }};
-        console.log(flaskData)
-
-        // // Now you can use flaskData in your JavaScript
-        // console.log("Palavra:", flaskData.palavra);
-        // console.log("Dica:", flaskData.dica);
-        // console.log("curDay:", flaskData.curDay);
 
     </script>
   </body>
