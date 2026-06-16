@@ -29,13 +29,10 @@
   onMounted(async () => {
     palavra = flaskData.palavra;
     palavra = palavra.toUpperCase();
-
     palavraArr = palavraNormalize = normalizeAcento(palavra);
-
     cr = flaskData.palavra_encrypt;
     dica = flaskData.dica;
     curDay = flaskData.curDay
-
     
     updateDica();
     criaJogo();
@@ -286,10 +283,8 @@
       var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      // Display the result in the element with id="demo"
       countdown.innerHTML = hours + "h " + ( minutes < 10 ? "0" + minutes : minutes) + "m " + ( seconds < 10 ? "0" + seconds : seconds) + "s ";
 
-    // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
         countdown.innerHTML = "EXPIRED";
@@ -311,12 +306,21 @@
 
 
   function janelaDica(){
-    if(!isWindowOpen) {
+    if (num_erros >= 2 && !isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
       const dicaWindow = document.getElementsByClassName('dica');
       dicaWindow.item(0).style.opacity = '100%';
       dicaWindow.item(0).style.visibility = "visible";
+    }
+    if (num_erros < 2 && !isWindowOpen) {
+      isWindowOpen = true;
+      popupoverlay('60%')
+      const dicaBlockWindow = document.getElementsByClassName('dica-block');
+      dicaBlockWindow.item(0).style.opacity = '100%';
+      dicaBlockWindow.item(0).style.visibility = "visible";
+      let blockText = (2 - num_erros > 1) ? `Faltam ${2 - num_erros} erros para desbloquear.` : `Falta ${2 - num_erros} erro para desbloquear.`;
+      document.getElementById('dica-text-body-block').innerHTML = blockText;
     }
   }
 
@@ -332,14 +336,14 @@
 
   function janelaStats(){
     getScoreboard();
-    if(!isWindowOpen) {
+    if (!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
       const statsWindow = document.getElementsByClassName('stats');
       statsWindow.item(0).style.opacity = '100%';
       statsWindow.item(0).style.visibility = "visible";
+      }
     }
-  }
 
   function closeWindow(e){
     e.target.parentNode.style.opacity = "0%";
@@ -447,6 +451,17 @@
         </div>
         <div class="janela-body-dica">
           <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
+        </div>
+      </div>
+
+      <div class="janela dica-block">
+        <button @click="closeWindow" class="close-button"> x </button>
+        <div class="janela-title">
+          <p class="title">Ops...</p>
+        </div>
+        <div class="janela-body-dica">
+          <p class="dica-text-body" id="dica-text-body"> A dica está bloqueada.</p>
+          <p class="dica-text-body" id="dica-text-body-block"></p>
         </div>
       </div>
 
