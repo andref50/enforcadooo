@@ -30,8 +30,8 @@ coverage
 
 env/
 venv/
-database/
+/server/database/
 .env
-__pycache__
+/server/__pycache__/
 wordlist_db
 wordlist_db__dev
