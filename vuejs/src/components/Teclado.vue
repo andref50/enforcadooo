@@ -6,9 +6,7 @@
   
   function kbTrigger(t) {
     const kp = t.target.className.split("_")[1].toUpperCase();
-
-    if (kp != 'enter')  { t.target.classList = 'keyboard-disabled' } 
-    else                { t.target.classList = 'keyboard-enter-disabled'}
+      t.target.classList = 'keyboard-disabled'
     emit("keyPressed", kp);
   }
 
@@ -55,7 +53,6 @@
       <button @click="kbTrigger" class="keyboard kb_b"> B </button>
       <button @click="kbTrigger" class="keyboard kb_n"> N </button>
       <button @click="kbTrigger" class="keyboard kb_m"> M </button>
-      <!-- <button @click="kbTriggerEnter" class="keyboard-enter kb_enter"> ENTER </button> -->
     </div>
   </div>
 </template>

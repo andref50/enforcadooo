@@ -16,6 +16,7 @@
   const server = import.meta.env.VITE_APP_API
 
   let palavra = ref('')
+  let palavra_decrypt = ref('')
   let palavraNormalize = ref('') 
   let palavraArr = ref('')
   let cr = ref('')
@@ -27,6 +28,28 @@
 
 
   onMounted(async () => {
+    // try {
+    //   const response = await fetch(server);
+    //   const dados = await response.json();
+    //   palavra = dados['palavra'].toUpperCase();
+    //   cr = dados['palavra_encrypt']
+    //   dica = dados['dica'];
+    //   curDay = dados['curDay']
+
+    //   let k = 'NPxMG4yxGjb6999v'
+    //   k = CryptoJS.enc.Utf8.parse(k)
+    //   let decrypted =  CryptoJS.AES.decrypt(cr, k, {mode:CryptoJS.mode.ECB});
+    //   palavra_decrypt = decrypted.toString(CryptoJS.enc.Utf8).toUpperCase()
+
+    //   console.log('Palavra_dectrypt: ', palavra_decrypt)
+
+    //   palavraArr = palavraNormalize = normalizeAcento(palavra);
+    //   // console.log(palavraArr, palavraNormalize, curDay)
+
+    //   } catch (error) {
+    //   console.log('Error fecthing data: ' + error)
+    //   }
+
     palavra = flaskData.palavra;
     palavra = palavra.toUpperCase();
 
@@ -56,11 +79,10 @@
         'curDay'      :0,
         'game_status' :'init',
         'last_erros'  :[],
-        'last_acertos':[],
-        'palpites':[]
+        'last_acertos':[]
       }
 
-  let gameStatusPOSTRequest = { 'status': '' }
+  let finalGamePOSTRequest = { 'status': '' }
 
   if(localStorage.length){ 
       gameData = JSON.parse(localStorage.getItem('status'))
@@ -70,23 +92,16 @@
 
   // ------- JOGO ------- //
   function keyPressed(kp){
-    gameData['game_status'] = 'playing'
-
-    if (!gameData['palpites'].includes(kp)) {
-      gameData['palpites'].push(kp)
-    }
-
-    localStorage.setItem('status', JSON.stringify(gameData))
-
     let arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     let arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
     let image = document.getElementsByClassName('corda')
+
 
     if(palavraNormalize.includes(kp)){
       palavraArr = palavraArr.replaceAll(kp, '')
       acertos.push(kp)
 
-      let temp = []
+    let temp = []
 
       for (let i = 0; i <= palavraNormalize.length; i++){
         if (palavraNormalize[i] === kp){
@@ -98,14 +113,13 @@
           }
         }
       }
-      temp.map((e, i) => { 
-                          setTimeout(() => {
-                          e.classList = 'letra-correct'
-                          }, 100 * i)
-      })
+    temp.map((e, i) => { 
+                    setTimeout(() => {
+                      e.classList = 'letra-correct'
+                    }, 100 * i)
+                  })
     } else {
       erros.push(kp)
-      
       num_erros += 1;
       arrBancoDiv[0].innerHTML = kp;
       arrBancoDiv[0].classList = 'banco-erro';
@@ -136,6 +150,8 @@
     const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
     const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
     const image = document.getElementsByClassName('corda');
+
+    erros = le
     
     for (let i = 0; i < palavraNormalize.length; i++){
       if (la.includes(palavraNormalize[i])){
@@ -145,7 +161,7 @@
         }, 50 * i + 1)
 
       }
-      else { 
+      else {
         arrSelectdiv[i].innerHTML = palavra[i]
         setTimeout(() => {
           arrSelectdiv[i].classList = 'letra-not-guessed'
@@ -169,18 +185,8 @@
     if (gameData['game_status'] == 'init'){
       janelaAjuda();
     }
-
-    else if(gameData['game_status'] == 'playing'){
-      let playing_palpites = gameData['palpites']
-      
-      for(let i = 0; i < playing_palpites.length; i++){
-        keyPressed(playing_palpites[i])
-        let keyPressedClass = document.getElementsByClassName(`kb_${playing_palpites[i].toLowerCase()}`).item(0)
-        keyPressedClass.classList = 'keyboard-disabled'
-      }
-    }
-
     else if(gameData['curDay'] == curDay) {
+
       retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
       if(gameData['game_status'] == 'lost'){
         showJanelaEndGame('gameover')
@@ -210,11 +216,11 @@
     if(event === 'winner'){
       totalVitorias += 1;
       gameResult = 'win'
-      gameStatusPOSTRequest['status'] = 'winner'
+      finalGamePOSTRequest['status'] = 'winner'
     } else {
       totalDerrotas += 1;
       gameResult = 'lost'
-      gameStatusPOSTRequest['status'] = 'lost'
+      finalGamePOSTRequest['status'] = 'lost'
     }
 
     gameData['vitorias']      = totalVitorias;
@@ -223,7 +229,6 @@
     gameData['curDay']        = curDay;
     gameData['last_acertos']  = acertos;
     gameData['last_erros']    = erros;
-    gameData['palpites'] = [];
     localStorage.setItem('status', JSON.stringify(gameData))
  
     try {
@@ -233,7 +238,7 @@
                                             'Accept': 'application/json',
                                             'Content-Type': 'application/json'
                                           },
-                                  body: JSON.stringify(gameStatusPOSTRequest)});
+                                  body: JSON.stringify(finalGamePOSTRequest)});
       const statusCheck = await response.json();
       }
       catch(error){
