@@ -1,5 +1,5 @@
 <script setup>
-  import {onMounted, ref} from 'vue'
+  import {onMounted, ref, computed, useTemplateRef} from 'vue'
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
   import svgstate1 from './assets/svg/svg-state-1.svg'
@@ -12,30 +12,71 @@
 
   // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
-  
-  const server = import.meta.env.VITE_APP_API
+
+  const server = import.meta.env.VITE_APP_API 
 
   let palavra = ref('')
   let palavraNormalize = ref('') 
-  let palavraArr = ref('')
-  let cr = ref('')
-  let dica = ''
+  let letrasRestantes = ref('')
+  let palavraEncrypt = ref('')
+  let dicaEncrypt = ref('')
+  let dica = ref('')
   let curDay = ref(0)
-  let acertos = []
-  let erros = []
-  let num_erros = 0;
+  let num_erros = ref(0);
+  
+  const palpitesCertos = ref([])
+  const palpitesErrados = ref([null, null, null, null, null, null])
+ 
+  const palpitesTotal = computed(() => {
+    return [...palpitesCertos.value, ...palpitesErrados.value]
+  })
 
+  const arrayLetrasNaoAdivinhadas = useTemplateRef('letrasNaoAdivinhadas');
+
+  const letras = computed(() => {
+      return Array.from(palavraNormalize.value)
+    })
+    
+  const textoDica = computed(() => {
+    if (num_erros.value < 2) {
+      return (2 - num_erros.value > 1) ? `Faltam ${2 - num_erros.value} erros para desbloquear.` : `Falta ${2 - num_erros.value} erro para desbloquear.`;
+    }
+    return dica.value
+  })
 
   onMounted(async () => {
-    palavra = flaskData.palavra;
-    palavra = palavra.toUpperCase();
-    palavraArr = palavraNormalize = normalizeAcento(palavra);
-    cr = flaskData.palavra_encrypt;
-    dica = flaskData.dica;
-    curDay = flaskData.curDay
+    // palavraEncrypt.value = flaskData.palavra_encrypt;
+    // dicaEncrypt.value = flaskData.dica;
+    // curDay = flaskData.curDay
+
+    try {
+      const response = await fetch(server);
+      const dados = await response.json();
+
+      palavraEncrypt.value = dados['palavra_encrypt']
+      dicaEncrypt.value = dados['dica'];
+      curDay = dados['curDay']
+
+      let k = 'NPxMG4yxGjb6999v'
+      k = CryptoJS.enc.Utf8.parse(k)
     
-    updateDica();
-    criaJogo();
+      let palavraDecrypt = CryptoJS.AES.decrypt(palavraEncrypt.value, k, {mode:CryptoJS.mode.ECB})
+      palavra.value = palavraDecrypt.toString(CryptoJS.enc.Utf8).toUpperCase();
+      let dicaDecrypt = CryptoJS.AES.decrypt(dicaEncrypt.value, k, {mode:CryptoJS.mode.ECB})
+      dica.value = dicaDecrypt.toString(CryptoJS.enc.Utf8)
+
+      palavraNormalize.value = normalizeAcento(palavra.value);
+
+      } catch (error) {
+      console.log('Error fecthing data: ' + error)
+    }
+
+    console.log('Palavra: ', palavra.value)
+    console.log('Dica: ', dica.value)
+    
+    // Wait for DOM to update before accessing refs
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     initStatus();
   });
 
@@ -44,20 +85,20 @@
 
   const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
 
-  var totalVitorias = 0;
-  var totalDerrotas = 0;
+  let totalVitorias = 0;
+  let totalDerrotas = 0;
 
   let gameData = {
-        'vitorias'    :0,
-        'derrotas'    :0,
-        'curDay'      :0,
-        'game_status' :'init',
-        'last_erros'  :[],
-        'last_acertos':[],
-        'palpites':[]
+        'vitorias'        :0,
+        'derrotas'        :0,
+        'curDay'          :0,
+        'status'          :'init',
+        'palpitesCertos'  :[],
+        'palpitesErrados' :[],
+        'num_erros'       :0,
       }
 
-  let gameStatusPOSTRequest = { 'status': '' }
+  let gameStatusPOSTRequest = {'status': ''}
 
   if(localStorage.length){ 
       gameData = JSON.parse(localStorage.getItem('status'))
@@ -66,161 +107,94 @@
   getScoreboard();
 
   // ------- JOGO ------- //
-  function keyPressed(kp){
-    gameData['game_status'] = 'playing'
-
-    if (!gameData['palpites'].includes(kp)) {
-      gameData['palpites'].push(kp)
+  function keyPressed(key){
+    if(palavraNormalize.value.includes(key)){
+      if(!palpitesCertos.value.includes(key)){
+        palpitesCertos.value.push(key)
+      }
+    } 
+    else {
+      if(!palpitesErrados.value.includes(key)){
+        palpitesErrados.value[num_erros.value] = key;
+      }
+      num_erros.value += 1;
     }
 
+    gameData.status = 'playing'
+    gameData.curDay = curDay
+    gameData.palpitesCertos = palpitesCertos.value
+    gameData.palpitesErrados = palpitesErrados.value
+    gameData.num_erros = num_erros.value
     localStorage.setItem('status', JSON.stringify(gameData))
+    checkWinCondition()
+  }
 
-    let arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
-    let arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
-    let image = document.getElementsByClassName('corda')
+  const checkWinCondition = () => {
+    letrasRestantes.value = normalizeAcento(palavra.value).split('').filter(letra => !palpitesCertos.value.includes(letra)).join('');
 
-    if(palavraNormalize.includes(kp)){
-      palavraArr = palavraArr.replaceAll(kp, '')
-      acertos.push(kp)
-
-      let temp = []
-
-      for (let i = 0; i <= palavraNormalize.length; i++){
-        if (palavraNormalize[i] === kp){
-          for (let j = 0; j < arrSelectdiv.length; j++){
-            if (arrSelectdiv[j].innerHTML == i){
-              temp.push(arrSelectdiv[j])
-              arrSelectdiv[j].innerHTML = palavra[i]
-            }
-          }
-        }
-      }
-      temp.map((e, i) => { 
-                          setTimeout(() => {
-                          e.classList = 'letra-correct'
-                          }, 100 * i)
-      })
-    } else {
-      erros.push(kp)
-      
-      num_erros += 1;
-      arrBancoDiv[0].innerHTML = kp;
-      arrBancoDiv[0].classList = 'banco-erro';
-      image.item(0).src = bodyStates[num_erros];
+    if(letrasRestantes.value.length === 0) {
+      endGame('winner')
+      showJanelaEndGame('winner')
     }
-
-    // CHECK IF WIN
-    if(palavraArr.length === 0) {
-
-        endGame('winner')
-        showJanelaEndGame('winner')
-      }
-
-    // CHECK IF LOSE
-    if(num_erros == 6) {
-      endGame('gameover')
-      showJanelaEndGame('gameover')
-      arrSelectdiv.map((e, i) => { 
-                    setTimeout(() => {
-                      e.innerHTML = palavraNormalize.charAt(e.innerHTML)
-                      e.classList = 'letra-incorrect'
-                    }, 100 * i)
-                  })
+    else if(num_erros.value == 6) {
+      endGame('lost')
+      showJanelaEndGame('lost')
+      revelaLetrasNaoAdivinhadas()
     }
   }
 
-  function retriveLastGame(la, le){
-    const arrSelectdiv = Array.prototype.slice.call(document.getElementsByClassName('letra-hidden'));
-    const arrBancoDiv = Array.prototype.slice.call(document.getElementsByClassName('banco'));
-    const image = document.getElementsByClassName('corda');
-    
-    for (let i = 0; i < palavraNormalize.length; i++){
-      if (la.includes(palavraNormalize[i])){
-        arrSelectdiv[i].innerHTML = palavra[i]
-        setTimeout(() => {
-          arrSelectdiv[i].classList = 'letra-correct'
-        }, 50 * i + 1)
-
-      }
-      else { 
-        arrSelectdiv[i].innerHTML = palavra[i]
-        setTimeout(() => {
-          arrSelectdiv[i].classList = 'letra-not-guessed'
-        }, 50 * i + 1)
-        
-      }
-    }
-
-    arrBancoDiv
-              .slice(0, le.length)
-              .map((e, i) => {
-                setTimeout(() => {
-                  e.innerHTML = le[i]
-                  e.classList = 'banco-erro';       
-                }, 50 * i)
-              })
-    image.item(0).src = bodyStates[le.length];
+  function revelaLetrasNaoAdivinhadas(){
+    arrayLetrasNaoAdivinhadas.value.map((e, i) => { 
+      setTimeout(() => {
+        e.innerHTML = palavra.value.charAt(e.id)
+        e.classList.replace('letra-hidden', 'letra-incorrect')
+      }, 100 * i)
+    })
   }
 
   function initStatus(){
-    if (gameData['game_status'] == 'init'){
-      janelaAjuda();
+    if (gameData.status == 'init'){
+      janelaAjuda()
     }
 
-    else if(gameData['game_status'] == 'playing'){
-      let playing_palpites = gameData['palpites']
-      
-      for(let i = 0; i < playing_palpites.length; i++){
-        keyPressed(playing_palpites[i])
-        let keyPressedClass = document.getElementsByClassName(`kb_${playing_palpites[i].toLowerCase()}`).item(0)
-        keyPressedClass.classList = 'keyboard-disabled'
-      }
+    else if(curDay > gameData.curDay){
+      gameData.palpitesCertos = []
+      gameData.palpitesErrados = []
+      gameData.num_erros = 0
+      localStorage.setItem('status', JSON.stringify(gameData))
     }
 
-    else if(gameData['curDay'] == curDay) {
-      retriveLastGame(gameData['last_acertos'], gameData['last_erros']);
-      if(gameData['game_status'] == 'lost'){
-        showJanelaEndGame('gameover')
-      } else {
-        showJanelaEndGame('winner')
-      }
+    else if(gameData.status == 'playing'){ 
+      palpitesCertos.value = gameData.palpitesCertos
+      palpitesErrados.value = gameData.palpitesErrados
+      num_erros.value = gameData.num_erros
+      checkWinCondition()
     }
-  }
-
-  function criaJogo() {
-    var div = document.getElementsByClassName("letras-div").item(0); 
-    for(let c in palavra){
-      var p = document.createElement('p1');
-      p.classList.add('letra-hidden');
-      // p.innerText = palavra[c];
-      p.innerText = c;
-      if(palavra[c] === " "){
-        p.classList.add('opacity-0', 'blank')
-      }
-      div.appendChild(p);
+    
+    else if(gameData.status == 'winner' || gameData.status == 'lost' && gameData.curDay == curDay){
+      palpitesCertos.value = gameData.palpitesCertos
+      palpitesErrados.value = gameData.palpitesErrados
+      num_erros.value = gameData.num_erros
+      showJanelaEndGame(gameData.status)
+      revelaLetrasNaoAdivinhadas()
     }
   }
 
   async function endGame(event){
-    let gameResult;
-
     if(event === 'winner'){
       totalVitorias += 1;
-      gameResult = 'win'
-      gameStatusPOSTRequest['status'] = 'winner'
+      gameData.status = 'winner';
+      // gameStatusPOSTRequest.status = 'winner'
     } else {
       totalDerrotas += 1;
-      gameResult = 'lost'
-      gameStatusPOSTRequest['status'] = 'lost'
+      gameData.status = 'lost';
+      // gameStatusPOSTRequest.status = 'lost'
     }
 
-    gameData['vitorias']      = totalVitorias;
-    gameData['derrotas']      = totalDerrotas;
-    gameData['game_status']   = gameResult;
-    gameData['curDay']        = curDay;
-    gameData['last_acertos']  = acertos;
-    gameData['last_erros']    = erros;
-    gameData['palpites'] = [];
+    gameData.vitorias = totalVitorias;
+    gameData.derrotas = totalDerrotas;
+    // gameData.curDay = curDay;
+    gameStatusPOSTRequest.status = gameData.status
     localStorage.setItem('status', JSON.stringify(gameData))
  
     try {
@@ -257,7 +231,6 @@
 
     let countdown = document.createElement('p')
     countdown.classList.add('countdown')
-    // countdown.innerText = '14:22:26'
     cdDiv.appendChild(countdown)
     cdRoot.style.display = "flex"
     cdRoot.style.flex = "1"
@@ -265,7 +238,6 @@
     
 
     // Set the date we're counting down to
-    const now = new Date()
     var countDownDate = new Date("Jan 5, 2030 23:59:59").getTime();
 
     // Update the count down every 1 second
@@ -298,29 +270,19 @@
   }
 
   function disableKeyboard(){
-  const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
-  arrButtons.forEach(element => {
-    element.classList = 'keyboard-disabled'
-    })
-  }
-
+    const arrButtons= Array.prototype.slice.call(document.getElementsByClassName('keyboard'));
+    arrButtons.forEach(element => {
+      element.classList = 'keyboard-disabled'
+      })
+    }
 
   function janelaDica(){
-    if (num_erros >= 2 && !isWindowOpen) {
+    if (!isWindowOpen) {
       isWindowOpen = true;
       popupoverlay('60%')
       const dicaWindow = document.getElementsByClassName('dica');
       dicaWindow.item(0).style.opacity = '100%';
       dicaWindow.item(0).style.visibility = "visible";
-    }
-    if (num_erros < 2 && !isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%')
-      const dicaBlockWindow = document.getElementsByClassName('dica-block');
-      dicaBlockWindow.item(0).style.opacity = '100%';
-      dicaBlockWindow.item(0).style.visibility = "visible";
-      let blockText = (2 - num_erros > 1) ? `Faltam ${2 - num_erros} erros para desbloquear.` : `Falta ${2 - num_erros} erro para desbloquear.`;
-      document.getElementById('dica-text-body-block').innerHTML = blockText;
     }
   }
 
@@ -358,12 +320,8 @@
   }
 
   function getScoreboard(){
-    totalVitorias = gameData['vitorias'];
-    totalDerrotas = gameData['derrotas'];
-  }
-
-  function updateDica(){
-    document.getElementById('dica-text-body').innerHTML = dica;
+    totalVitorias = gameData.vitorias;
+    totalDerrotas = gameData.derrotas;
   }
 
   async function comparilhe(){
@@ -377,8 +335,9 @@
       6: '😔Joguei Enforcado, mas não foi dessa vez :/ \n🟥🟥🟥🟥🟥🟥\nTente em enforcado.app'
     }
     
-    await navigator.share({'text': shareResultText[erros.length]})
+    await navigator.share({text: shareResultText[num_erros.value]})
   }
+
 </script>
 
 <template>
@@ -396,10 +355,8 @@
 
       <div class="popup-overlay"></div>
 
-
       <!-- GAME OVER -->
-      <div class="janela gameover">
-        <!-- <button @click="closeWindow" class="close-button btn-gameover"> x </button> -->
+      <div class="janela lost">
         <div class="janela-title">
           <p class="title title-winner-lose">Game over :(</p>
         </div>
@@ -407,7 +364,6 @@
 
       <!-- WINNER -->
       <div class="janela winner">
-        <!-- <button @click="closeWindow" class="close-button btn-winner"> x </button> -->
         <div class="janela-title">
           <p class="title title-winner-lose">Parabéns :)</p>
         </div>
@@ -450,21 +406,9 @@
           <p class="title">Dica: 👀</p>
         </div>
         <div class="janela-body-dica">
-          <p class="dica-text-body" id="dica-text-body"> {{ dica }} </p>
+          <p class="dica-text-body" id="dica-text-body"> {{ textoDica }} </p>
         </div>
       </div>
-
-      <div class="janela dica-block">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title">Ops...</p>
-        </div>
-        <div class="janela-body-dica">
-          <p class="dica-text-body" id="dica-text-body"> A dica está bloqueada.</p>
-          <p class="dica-text-body" id="dica-text-body-block"></p>
-        </div>
-      </div>
-
 
 
       <!-- AJUDA -->
@@ -502,7 +446,7 @@
 
       <!-- BONECO -->
       <div class="corda-container">
-        <img :src="svgstate1" class="corda"/>
+        <img :src="bodyStates[num_erros]" class="corda"/>
       </div>
 
       <!-- BANCO -->
@@ -512,21 +456,28 @@
         </div>
 
         <div class="tentativas-box">
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
-          <div class="banco"></div>
+          <div v-for="(item, index) in palpitesErrados" 
+          :key="index"
+          v-text="palpitesErrados[index] == null ? '' : palpitesErrados[index]" 
+          :class="palpitesErrados[index] == null ? 'banco' : 'banco-erro'" 
+          ref="banco"></div>
         </div>
       </div>
 
       <!--LETRAS -->
-      <div class="letras-div">  </div>
+      <div class="letras-div">
+        <p v-for="(item, index) in letras" 
+          :key="index" 
+          :id="index"
+          v-text="palpitesCertos.includes(item) ? palavra[index] : ''"
+          :class="palpitesCertos.includes(item) ? 'letra-correct' : 'letra-hidden'"
+          :ref="palpitesCertos.includes(item) ? '' : 'letrasNaoAdivinhadas'">
+        </p>  
+      </div>
 
       <!-- TECLADO -->
       <div class="teclado-componente">
-        <Teclado @keyPressed="keyPressed"/>
+        <Teclado @keyPressed="keyPressed" :items="palpitesTotal"/>
       </div>
 
     </div> <!--SECAO PRINCIPAL--> </div>

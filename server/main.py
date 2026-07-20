@@ -6,8 +6,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_word, 'cron', hour=3)
-scheduler.add_job(refresh_word, 'interval', minutes=1)
+# scheduler.add_job(update_word, 'cron', hour=3)
+scheduler.add_job(update_word, 'interval', minutes=1)
+# scheduler.add_job(refresh_word, 'interval', minutes=1)
 scheduler.start()
 
 
@@ -15,7 +16,8 @@ scheduler.start()
 def index(): 
     if request.method == 'GET':
         response = data.to_dict()
-        return render_template('index.html', data=response)
+        # return render_template('index.html', data=response)
+        return jsonify(response)
     
     if request.method == 'POST':
         req = request.json

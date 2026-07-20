@@ -24,10 +24,10 @@ def update_word():
 
         db.session.commit()
 
-        data.palavra = palavra.palavra
+        data.palavra = encrypt(palavra.palavra).decode('utf-8', 'ignore')
         data.palavra_encrypt = encrypt(palavra.palavra).decode('utf-8', 'ignore')
-        data.dica    = palavra.dica
-        data.curDay  = current_day.curDay
+        data.dica = encrypt(palavra.dica).decode('utf-8', 'ignore')
+        data.curDay = current_day.curDay
 
         print(data.to_dict())
 
