@@ -37,9 +37,9 @@ def refresh_word():
         palavra = db.session.scalar(sa.select(Palavra).where(Palavra.ativa == True))
         current_day = db.session.scalar(sa.select(CurrentDay))
 
-        data.palavra = palavra.palavra
+        data.palavra = encrypt(palavra.palavra).decode('utf-8', 'ignore')
         data.palavra_encrypt = encrypt(palavra.palavra).decode('utf-8', 'ignore')
-        data.dica    = palavra.dica
+        data.dica    = encrypt(palavra.dica).decode('utf-8', 'ignore')
         data.curDay  = current_day.curDay
 
         print(data.to_dict())
