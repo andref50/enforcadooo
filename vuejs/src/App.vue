@@ -71,8 +71,8 @@
       console.log('Error fecthing data: ' + error)
     }
 
-    console.log('Palavra: ', palavra.value)
-    console.log('Dica: ', dica.value)
+    // console.log('Palavra: ', palavra.value)
+    // console.log('Dica: ', dica.value)
     
     // Wait for DOM to update before accessing refs
     await new Promise(resolve => setTimeout(resolve, 0));
