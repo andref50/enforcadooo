@@ -12,17 +12,24 @@ scheduler.add_job(refresh_word, 'interval', minutes=1)
 scheduler.start()
 
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods = ['GET'])
 def index(): 
     if request.method == 'GET':
         response = data.to_dict()
         # return render_template('index.html', data=response)
         return jsonify(response)
     
-    if request.method == 'POST':
-        req = request.json
-        update_placar(req)
-        return jsonify(req)
+    # if request.method == 'POST':
+    #     req = request.json
+    #     update_placar(req)
+    #     return jsonify(req)
+    
+@app.route('/api', methods = ['POST'])
+def post():
+    req = request.json
+    update_placar(req)
+    return jsonify(req)
+
 
 if __name__ == '__main__':
     app.run()
