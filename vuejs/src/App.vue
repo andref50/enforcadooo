@@ -14,6 +14,7 @@
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
   const server = import.meta.env.VITE_APP_API 
+  const server_post = import.meta.env.VITE_APP_API_POST
 
   let palavra = ref('')
   let palavraNormalize = ref('') 
@@ -193,12 +194,11 @@
 
     gameData.vitorias = totalVitorias;
     gameData.derrotas = totalDerrotas;
-    // gameData.curDay = curDay;
     gameStatusPOSTRequest.status = gameData.status
     localStorage.setItem('status', JSON.stringify(gameData))
  
     try {
-      const response = await fetch(server, 
+      const response = await fetch(server_post, 
                                   {method: 'POST',
                                   headers: {
                                             'Accept': 'application/json',
