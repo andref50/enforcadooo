@@ -1,5 +1,6 @@
 <script setup>
-  import {onMounted, ref, computed, useTemplateRef} from 'vue'
+  import { onMounted, ref, computed, useTemplateRef } from 'vue'
+
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
   import svgstate1 from './assets/svg/svg-state-1.svg'
@@ -9,12 +10,16 @@
   import svgstate5 from './assets/svg/svg-state-5.svg'
   import svgstate6 from './assets/svg/svg-state-6.svg'
   import svgstate7 from './assets/svg/svg-state-7.svg'
+  import JanelaAjuda from './components/JanelaAjuda.vue';
+  import JanelaDica from './components/JanelaDica.vue';
+  import JanelaStats from './components/JanelaStats.vue';
+  import BoxWin from './components/BoxWin.vue';
+  import BoxGameover from './components/BoxGameover.vue';
 
-  // ------------------------------- HELPERS & CONSTANTES ------------------------------ //                          
   function normalizeAcento(a) { return a.normalize('NFD').replace(/[\u0300-\u036f]/g, "") };
 
   const server = import.meta.env.VITE_APP_API 
-  
+
   let palavra = ref('')
   let palavraNormalize = ref('') 
   let letrasRestantes = ref('')
@@ -45,10 +50,6 @@
   })
 
   onMounted(async () => {
-    // palavraEncrypt.value = flaskData.palavra_encrypt;
-    // dicaEncrypt.value = flaskData.dica;
-    // curDay = flaskData.curDay
-
     try {
       const response = await fetch(server);
       const dados = await response.json();
@@ -70,18 +71,19 @@
       } catch (error) {
       console.log('Error fecthing data: ' + error)
     }
-
-    // console.log('Palavra: ', palavra.value)
-    // console.log('Dica: ', dica.value)
     
     // Wait for DOM to update before accessing refs
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    initStatus();
+    initGame();
   });
 
-  // WINDOW MANAGER BOOL
-  let isWindowOpen = false; 
+  // janelas
+  let showJanelaAjuda = ref(false)
+  let showJanelaDica = ref(false)
+  let showJanelaStats = ref(false)
+  let showBoxWin = ref(false)
+  let showBoxGameover = ref(false)
 
   const bodyStates = [svgstate1, svgstate2, svgstate3, svgstate4, svgstate5, svgstate6, svgstate7];
 
@@ -104,7 +106,7 @@
       gameData = JSON.parse(localStorage.getItem('status'))
     }
 
-  getScoreboard();
+  reloadScoreboard();
 
   // ------- JOGO ------- //
   function keyPressed(key){
@@ -126,6 +128,7 @@
     gameData.palpitesErrados = palpitesErrados.value
     gameData.num_erros = num_erros.value
     localStorage.setItem('status', JSON.stringify(gameData))
+    
     checkWinCondition()
   }
 
@@ -134,11 +137,11 @@
 
     if(letrasRestantes.value.length === 0) {
       endGame('winner')
-      showJanelaEndGame('winner')
+      mostraJanelaFimJogo('winner')
     }
     else if(num_erros.value == 6) {
       endGame('lost')
-      showJanelaEndGame('lost')
+      mostraJanelaFimJogo('lost')
       revelaLetrasNaoAdivinhadas()
     }
   }
@@ -152,9 +155,8 @@
     })
   }
 
-  function initStatus(){
+  function initGame(){
     if (gameData.status == 'init'){
-      janelaAjuda()
     }
 
     else if(curDay > gameData.curDay){
@@ -175,7 +177,7 @@
       palpitesCertos.value = gameData.palpitesCertos
       palpitesErrados.value = gameData.palpitesErrados
       num_erros.value = gameData.num_erros
-      showJanelaEndGame(gameData.status)
+      mostraJanelaFimJogo(gameData.status)
       revelaLetrasNaoAdivinhadas()
     }
   }
@@ -184,11 +186,9 @@
     if(event === 'winner'){
       totalVitorias += 1;
       gameData.status = 'winner';
-      // gameStatusPOSTRequest.status = 'winner'
     } else {
       totalDerrotas += 1;
       gameData.status = 'lost';
-      // gameStatusPOSTRequest.status = 'lost'
     }
 
     gameData.vitorias = totalVitorias;
@@ -210,61 +210,16 @@
         console.log(error)
       }
     }
-  
 
-  function showJanelaEndGame(event){
+  function mostraJanelaFimJogo(event){
     disableKeyboard();
     setTimeout(() => {
-      document.getElementsByClassName(event).item(0).style.opacity = '100%'
-      document.getElementsByClassName(event).item(0).style.visibility = "visible";
-      document.getElementById('total-win-text').innerHTML = totalVitorias;
-      document.getElementById('total-lose-text').innerHTML = totalDerrotas;
+      if (event == 'winner') showBoxWin.value = true
+      else showBoxGameover.value = true
     }, 500)
 
-    let cdDiv = document.querySelector('.countdown-div')
-    let cdRoot = document.querySelector('#countdown')
-    let cdTitle = document.createElement('p')
-    cdTitle.classList.add('countdown-title')
-    cdTitle.innerText = 'PRÓXIMA PALAVRA:'
-    cdDiv.appendChild(cdTitle)
-
-    let countdown = document.createElement('p')
-    countdown.classList.add('countdown')
-    cdDiv.appendChild(countdown)
-    cdRoot.style.display = "flex"
-    cdRoot.style.flex = "1"
-    cdRoot.style.flexDirection = 'column '
-    
-
-    // Set the date we're counting down to
-    var countDownDate = new Date("Jan 5, 2030 23:59:59").getTime();
-
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-
-      // Get today's date and time
-      var now = new Date().getTime();
-
-      // Find the distance between now and the count down date
-      var distance = countDownDate - now;
-
-      // Time calculations for days, hours, minutes and seconds
-      // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      countdown.innerHTML = hours + "h " + ( minutes < 10 ? "0" + minutes : minutes) + "m " + ( seconds < 10 ? "0" + seconds : seconds) + "s ";
-
-      if (distance < 0) {
-        clearInterval(x);
-        countdown.innerHTML = "EXPIRED";
-      }
-    }, 1000);
-
-
     setTimeout(() => {
-      janelaStats();
+      showJanelaStats.value = true;
     }, 550)
   }
 
@@ -275,66 +230,9 @@
       })
     }
 
-  function janelaDica(){
-    if (!isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%')
-      const dicaWindow = document.getElementsByClassName('dica');
-      dicaWindow.item(0).style.opacity = '100%';
-      dicaWindow.item(0).style.visibility = "visible";
-    }
-  }
-
-  function janelaAjuda(){
-    if(!isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%');
-      const ajudawindow = document.getElementsByClassName('ajuda');
-      ajudawindow.item(0).style.opacity = '100%';
-      ajudawindow.item(0).style.visibility = "visible";
-    }
-  }
-
-  function janelaStats(){
-    getScoreboard();
-    if (!isWindowOpen) {
-      isWindowOpen = true;
-      popupoverlay('60%')
-      const statsWindow = document.getElementsByClassName('stats');
-      statsWindow.item(0).style.opacity = '100%';
-      statsWindow.item(0).style.visibility = "visible";
-      }
-    }
-
-  function closeWindow(e){
-    e.target.parentNode.style.opacity = "0%";
-    e.target.parentNode.style.visibility = "hidden";
-    popupoverlay('0%');
-    isWindowOpen = false;
-  }
-
-  function popupoverlay(po){
-    const popup_overlay = document.getElementsByClassName('popup-overlay');
-    popup_overlay.item(0).style.opacity = po;
-  }
-
-  function getScoreboard(){
+  function reloadScoreboard(){
     totalVitorias = gameData.vitorias;
     totalDerrotas = gameData.derrotas;
-  }
-
-  async function comparilhe(){
-    const shareResultText = {
-      0: '🔥Joguei Enforcado e acertei de primeira! \n🟩🟩🟩🟩🟩🟩 \nTente em enforcado.app',
-      1: '🔥Joguei Enforcado e acertei na segunda! \n🟥🟩🟩🟩🟩🟩 \nTente em enforcado.app',
-      2: '🔥Joguei Enforcado e acertei na terceira! \n🟥🟥🟩🟩🟩🟩 \nTente em enforcado.app',
-      3: '🔥Joguei Enforcado e até que fui bem! \n🟥🟥🟥🟩🟩🟩 \nTente em enforcado.app',
-      4: '🔥Quase! Acertei Enforcado na penúltima! 🔥 \n🟥🟥🟥🟥🟩🟩 \nTente em enforcado.app',
-      5: '🔥Quase! Acertei Enforcado na última! \n🟥🟥🟥🟥🟥🟩 \nTente em enforcado.app',
-      6: '😔Joguei Enforcado, mas não foi dessa vez :/ \n🟥🟥🟥🟥🟥🟥\nTente em enforcado.app'
-    }
-    
-    await navigator.share({text: shareResultText[num_erros.value]})
   }
 
 </script>
@@ -345,103 +243,35 @@
   <div class="container">
     
     <!-- TOPO -->
-    <Topo @janelaDicaEvent="janelaDica"
-          @janelaAjudaEvent="janelaAjuda"
-          @janelaStatsEvent="janelaStats"/>
+    <Topo @janelaDicaEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [true, false, false]"
+          @janelaAjudaEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, true, false]"
+          @janelaStatsEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, false, true]" />
 
     <!-- PRINCIPAL -->
     <div class="secao-principal">
-
-      <div class="popup-overlay"></div>
-
-      <!-- GAME OVER -->
-      <div class="janela lost">
-        <div class="janela-title">
-          <p class="title title-winner-lose">Game over :(</p>
-        </div>
-      </div>
-
-      <!-- WINNER -->
-      <div class="janela winner">
-        <div class="janela-title">
-          <p class="title title-winner-lose">Parabéns :)</p>
-        </div>
-      </div>
-
-      <!-- ESTATISICAS -->
-      <div class="janela stats">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title-stats">Sua evolução:</p>
-          <br>
-        </div>
-        <div class="janela-body">
-          <div class="flex flex-row flex-1 justify-center">
-            <div class="flex flex-col items-center px-8">
-              <button class="placar" id="total-win-text"> {{ totalVitorias }} </button>
-              <p class="placar-label">VITÓRIAS</p>
-            </div>
-            <div class="flex flex-col items-center px-8">
-              <button class="placar" id="total-lose-text"> {{ totalDerrotas }} </button>
-              <p class="placar-label">DERROTAS</p>
-              <br>
-            </div>
-          </div>
-          <div id="countdown">
-            <div class="countdown-div">
-            </div>
-            <div class="compartilhe">
-              <button @click="comparilhe">➥ Compartilhe</button>
-            </div>
-          </div>
-        </div>
-    
-      </div>
-
-      <!-- DICA -->
-      <div class="janela dica">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title">Dica: 👀</p>
-        </div>
-        <div class="janela-body-dica">
-          <p class="dica-text-body" id="dica-text-body"> {{ textoDica }} </p>
-        </div>
-      </div>
-
-
-      <!-- AJUDA -->
-      <div class="janela ajuda">
-        <button @click="closeWindow" class="close-button"> x </button>
-        <div class="janela-title">
-          <p class="title">Como jogar:</p>
-        </div>
-        <div class="janela-body">
-          <p>Enforcado é o jogo da forca </p>
-          <p>que você já conhece de cara nova :)</p>
-          <br>
-          <p>Tente adivinhar a palavra secreta 
-            clicando nas letras, mas cuidado: 
-            cada erro te deixa mais próximo 
-            de um trágico fim. </p>
-          <br>
-          <div class="flex flex-col">
-            <div class="flex flex-row items-center">
-              <button class="helpers">!</button>
-              <p class="ajuda-buttons-label">dica</p>
-            </div>
-            <div class="flex flex-row items-center">
-              <button class="helpers">ılıı</button>
-              <p class="ajuda-buttons-label">placar</p>
-            </div>
-            <div class="flex flex-row items-center">
-              <button class="helpers">?</button>
-              <p class="ajuda-buttons-label">ajuda </p>
-            </div>
-          </div>
-        </div>
-      </div>
       
+      <div class="popup-overlay" 
+        v-if="showJanelaAjuda || showJanelaDica || showJanelaStats"
+        @click="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, false, false]">
+      </div>
+
+      <BoxWin v-show="showBoxWin"/>
+      <BoxGameover v-show="showBoxGameover"/>
+      
+      <JanelaAjuda v-show="showJanelaAjuda" 
+                  @fechaJanela="showJanelaAjuda=false"/>
+
+      <JanelaStats v-show="showJanelaStats"
+                  @fechaJanela="showJanelaStats=false"
+                  :vitorias="totalVitorias"
+                  :derrotas="totalDerrotas"
+                  :num_erros="num_erros"
+                  :status="gameData.status"/>
+
+
+      <JanelaDica v-show="showJanelaDica" 
+                  @fechaJanela="showJanelaDica=false" 
+                  :dica="textoDica"/>      
 
       <!-- BONECO -->
       <div class="corda-container">
@@ -479,5 +309,6 @@
         <Teclado @keyPressed="keyPressed" :items="palpitesTotal"/>
       </div>
 
-    </div> <!--SECAO PRINCIPAL--> </div>
+    </div> <!--SECAO PRINCIPAL--> 
+  </div>
 </template>

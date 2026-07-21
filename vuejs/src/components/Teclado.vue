@@ -7,11 +7,8 @@
     const kp = t.target.innerHTML.toUpperCase();
     emit("keyPressed", kp);
   }
-const props = defineProps({
-    items: {
-      type: Array,
-      default: () => []
-    }
+  const props = defineProps({
+    items: Array
   });
 </script>
 
@@ -20,9 +17,7 @@ const props = defineProps({
 
   <div class="keyboard-div">
     <!-- LINHA 1 -->
-    <!-- <div class="grid grid-cols-10"> -->
     <div class="kb_linha">
-      <!-- <button @click="kbTrigger" class="keyboard kb_q"> Q </button> -->
       <button @click="kbTrigger" :class="props.items.includes('Q') ? 'keyboard-disabled' : 'keyboard'">Q</button>
       <button @click="kbTrigger" :class="props.items.includes('W') ? 'keyboard-disabled' : 'keyboard'">W</button>
       <button @click="kbTrigger" :class="props.items.includes('E') ? 'keyboard-disabled' : 'keyboard'">E</button>
@@ -35,7 +30,6 @@ const props = defineProps({
       <button @click="kbTrigger" :class="props.items.includes('P') ? 'keyboard-disabled' : 'keyboard'">P</button>
     </div>
     <!-- LINHA 2 -->
-    <!-- <div class="grid grid-cols-10"> -->
     <div class="kb_linha2">
       <button @click="kbTrigger" :class="props.items.includes('A') ? 'keyboard-disabled' : 'keyboard'">A</button>
       <button @click="kbTrigger" :class="props.items.includes('S') ? 'keyboard-disabled' : 'keyboard'">S</button>
@@ -48,7 +42,6 @@ const props = defineProps({
       <button @click="kbTrigger" :class="props.items.includes('L') ? 'keyboard-disabled' : 'keyboard'">L</button>
     </div>
     <!-- LINHA 3 -->
-    <!-- <div class="grid grid-cols-10"> -->
     <div class="kb_linha3">
       <button @click="kbTrigger" :class="props.items.includes('Z') ? 'keyboard-disabled' : 'keyboard'">Z</button>
       <button @click="kbTrigger" :class="props.items.includes('X') ? 'keyboard-disabled' : 'keyboard'">X</button>

@@ -4,7 +4,6 @@
 <template>
 <!-- TOPO -->
     <div class="topo">
-      <!-- <div class="grid grid-cols-3 m-2 mt-0 items-center "> -->
       <div class="topo-subdiv">
 
         <!-- ESQUERDA -->
