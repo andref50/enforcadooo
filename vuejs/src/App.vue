@@ -128,7 +128,7 @@
     gameData.palpitesErrados = palpitesErrados.value
     gameData.num_erros = num_erros.value
     localStorage.setItem('status', JSON.stringify(gameData))
-    
+
     checkWinCondition()
   }
 
@@ -243,25 +243,25 @@
   <div class="container">
     
     <!-- TOPO -->
-    <Topo @janelaDicaEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [true, false, false]"
-          @janelaAjudaEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, true, false]"
-          @janelaStatsEvent="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, false, true]" />
+    <Topo @janelaDicaEvent="showJanelaDica = true; showJanelaAjuda =showJanelaStats = false;"
+          @janelaAjudaEvent="showJanelaAjuda = true; showJanelaStats = showJanelaDica = false"
+          @janelaStatsEvent="showJanelaStats = true; showJanelaDica = showJanelaAjuda = false" />
 
     <!-- PRINCIPAL -->
     <div class="secao-principal">
       
       <div class="popup-overlay" 
         v-if="showJanelaAjuda || showJanelaDica || showJanelaStats"
-        @click="[showJanelaDica, showJanelaAjuda, showJanelaStats] = [false, false, false]">
+        @click="showJanelaDica = showJanelaAjuda = showJanelaStats = false">
       </div>
 
-      <BoxWin v-show="showBoxWin"/>
-      <BoxGameover v-show="showBoxGameover"/>
+      <BoxWin v-if="showBoxWin"/>
+      <BoxGameover v-if="showBoxGameover"/>
       
-      <JanelaAjuda v-show="showJanelaAjuda" 
+      <JanelaAjuda v-if="showJanelaAjuda" 
                   @fechaJanela="showJanelaAjuda=false"/>
 
-      <JanelaStats v-show="showJanelaStats"
+      <JanelaStats v-if="showJanelaStats"
                   @fechaJanela="showJanelaStats=false"
                   :vitorias="totalVitorias"
                   :derrotas="totalDerrotas"
@@ -269,7 +269,7 @@
                   :status="gameData.status"/>
 
 
-      <JanelaDica v-show="showJanelaDica" 
+      <JanelaDica v-if="showJanelaDica" 
                   @fechaJanela="showJanelaDica=false" 
                   :dica="textoDica"/>      
 
