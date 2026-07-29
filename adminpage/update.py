@@ -24,7 +24,7 @@ def list_words():
     with sqlite3.connect(db_stats) as conn:
         cursor = conn.cursor()
         # cursor.execute("SELECT * FROM WORDLIST WHERE used=True;")
-        cursor.execute("SELECT * FROM WORDLIST ORDER BY acertos ASC")
+        cursor.execute("SELECT * FROM WORDLIST ORDER BY acertos DESC")
         word_query = cursor.fetchall()
 
         return word_query
