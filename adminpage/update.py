@@ -23,7 +23,8 @@ def current_word():
 def list_words():
     with sqlite3.connect(db_stats) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM WORDLIST WHERE used=True;")
+        # cursor.execute("SELECT * FROM WORDLIST WHERE used=True;")
+        cursor.execute("SELECT * FROM WORDLIST")
         word_query = cursor.fetchall()
 
         return word_query
