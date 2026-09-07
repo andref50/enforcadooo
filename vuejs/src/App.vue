@@ -1,5 +1,5 @@
 <script setup>
-  import { onMounted, ref, computed, useTemplateRef } from 'vue'
+  import { onMounted, onUnmounted, ref, computed, useTemplateRef } from 'vue'
 
   import Topo from './components/Topo.vue';
   import Teclado from './components/Teclado.vue';
@@ -49,14 +49,22 @@
     return dica.value
   })
 
+  const handleVisibilityChange = () => {
+    if (!document.hidden) {
+        window.location.reload();
+    }
+  }
+
   onMounted(async () => {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     try {
       const response = await fetch(server);
       const dados = await response.json();
 
       palavraEncrypt.value = dados['palavra_encrypt']
       dicaEncrypt.value = dados['dica'];
-      curDay = dados['curDay']
+      curDay.value = dados['curDay']
 
       let k = 'NPxMG4yxGjb6999v'
       k = CryptoJS.enc.Utf8.parse(k)
@@ -76,6 +84,10 @@
     await new Promise(resolve => setTimeout(resolve, 0));
 
     initGame();
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   });
 
   // janelas
@@ -110,6 +122,14 @@
 
   // ------- JOGO ------- //
   function keyPressed(key){
+    if (
+      gameData.status === 'winner' ||
+      gameData.status === 'lost' ||
+      palpitesTotal.value.includes(key)
+    ) {
+      return
+    }
+
     if(palavraNormalize.value.includes(key)){
       if(!palpitesCertos.value.includes(key)){
         palpitesCertos.value.push(key)
@@ -123,7 +143,7 @@
     }
 
     gameData.status = 'playing'
-    gameData.curDay = curDay
+    gameData.curDay = curDay.value
     gameData.palpitesCertos = palpitesCertos.value
     gameData.palpitesErrados = palpitesErrados.value
     gameData.num_erros = num_erros.value
@@ -156,39 +176,70 @@
   }
 
   function initGame(){
-    if (gameData.status == 'init'){
+    const mesmoDia = Number(gameData.curDay) === curDay.value
+    if (!mesmoDia || gameData.status == 'init'){
+      resetGame()
+      return
     }
 
-    else if(curDay > gameData.curDay){
-      gameData.palpitesCertos = []
-      gameData.palpitesErrados = []
-      gameData.num_erros = 0
-      localStorage.setItem('status', JSON.stringify(gameData))
-    }
+    // else if(curDay > gameData.curDay){
+    //   gameData.num_erros = 0
+    //   gameData.palpitesCertos = []
+    //   gameData.palpitesErrados = []
+    //   gameData.curDay = curDay.value
+    //   gameData.status = 'playing'
 
-    else if(gameData.status == 'playing'){ 
-      palpitesCertos.value = gameData.palpitesCertos
-      palpitesErrados.value = gameData.palpitesErrados
-      num_erros.value = gameData.num_erros
+    //   num_erros.value = 0
+    //   palpitesCertos.value = []
+    //   palpitesErrados.value = []
+
+    //   localStorage.setItem('status', JSON.stringify(gameData))
+    // }
+
+    if(gameData.status === 'playing'){ 
+      palpitesCertos.value = gameData.palpitesCertos || []
+      palpitesErrados.value = gameData.palpitesErrados || Array(6).fill(null)
+      num_erros.value = gameData.num_erros || 0
       checkWinCondition()
+      return
     }
     
-    else if(gameData.status == 'winner' || gameData.status == 'lost' && gameData.curDay == curDay){
-      palpitesCertos.value = gameData.palpitesCertos
-      palpitesErrados.value = gameData.palpitesErrados
-      num_erros.value = gameData.num_erros
+    const isFinished =
+      (gameData.status === 'winner' || gameData.status === 'lost') && mesmoDia
+
+    if(isFinished){
+      palpitesCertos.value = gameData.palpitesCertos || []
+      palpitesErrados.value = gameData.palpitesErrados || Array(6).fill(null)
+      num_erros.value = gameData.num_erros || 0 
+      
       mostraJanelaFimJogo(gameData.status)
       revelaLetrasNaoAdivinhadas()
     }
   }
 
+  function resetGame() {
+    gameData.status = 'playing'
+    gameData.curDay = curDay.value
+    gameData.palpitesCertos = []
+    gameData.palpitesErrados = Array(6).fill(null)
+    gameData.num_erros = 0
+
+    palpitesCertos.value = []
+    palpitesErrados.value = Array(6).fill(null)
+    num_erros.value = 0
+
+    localStorage.setItem('status', JSON.stringify(gameData))
+  }
+
   async function endGame(event){
-    if(event === 'winner'){
-      totalVitorias += 1;
-      gameData.status = 'winner';
+    if (gameData.status === 'winner' || gameData.status === 'lost') return 
+
+    if (event === 'winner') {
+      totalVitorias += 1
+      gameData.status = 'winner'
     } else {
-      totalDerrotas += 1;
-      gameData.status = 'lost';
+      totalDerrotas += 1
+      gameData.status = 'lost'
     }
 
     gameData.vitorias = totalVitorias;
